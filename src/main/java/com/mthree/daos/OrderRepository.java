@@ -3,9 +3,9 @@ package com.mthree.daos;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.mthree.models.Trader;
+import com.mthree.models.Order;
 
 @Repository
-public interface TraderRepository extends JpaRepository<Trader, Integer> {
+public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 }

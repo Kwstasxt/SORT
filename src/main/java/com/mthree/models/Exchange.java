@@ -2,25 +2,55 @@ package com.mthree.models;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="exchanges")
 public class Exchange {
 	
-	private Map<FeeType, BigDecimal> feeLadder;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "exchange_id")
+	private int id;
+	
+	@OneToMany
+	private List<Fee> feeLadder;
+	
+	@OneToMany
 	private List<OrderBook> orderBooks;
+	
+	@Column(name="todays_trade_value")
 	private BigDecimal todaysTradeValue;
 	
-	public Exchange(Map<FeeType, BigDecimal> feeLadder, List<OrderBook> orderBooks, BigDecimal todaysTradeValue) {
+	public Exchange() {}
+	
+	public Exchange(int id, List<Fee> feeLadder, List<OrderBook> orderBooks, BigDecimal todaysTradeValue) {
+		this.id = id;
 		this.feeLadder = feeLadder;
 		this.orderBooks = orderBooks;
 		this.todaysTradeValue = todaysTradeValue;
 	}
+	
+	public int getId() {
+		return id;
+	}
 
-	public Map<FeeType, BigDecimal> getFeeLadder() {
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public List<Fee> getFeeLadder() {
 		return feeLadder;
 	}
 
-	public void setFeeLadder(Map<FeeType, BigDecimal> feeLadder) {
+	public void setFeeLadder(List<Fee> feeLadder) {
 		this.feeLadder = feeLadder;
 	}
 
@@ -42,7 +72,7 @@ public class Exchange {
 
 	@Override
 	public String toString() {
-		return "Exchange [feeLadder=" + feeLadder + ", orderBooks=" + orderBooks + ", todaysTradeValue="
+		return "Exchange [id=" + id + ", feeLadder=" + feeLadder + ", orderBooks=" + orderBooks + ", todaysTradeValue="
 				+ todaysTradeValue + "]";
 	}
 }

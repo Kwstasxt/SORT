@@ -2,22 +2,53 @@ package com.mthree.models;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="orders")
 public class Order {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "order_id")
+	private int id;
+	
+	@Column(name="ric")
 	private String ric;
+	
+	@Column(name="price")
 	private BigDecimal price;
+	
+	@Column(name="quantity")
 	private int quantity;
 	
-//	@Enumerated(value=OrderType.STRING)
+	@Column(name="type")
+	@Enumerated(value=EnumType.STRING)
 	private OrderType type;
 	
-	public Order(String ric, BigDecimal price, int quantity, OrderType type) {
+	public Order() {}
+	
+	public Order(int id, String ric, BigDecimal price, int quantity, OrderType type) {
+		this.id = id;
 		this.ric = ric;
 		this.price = price;
 		this.quantity = quantity;
 		this.type = type;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getRic() {
@@ -54,6 +85,6 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [ric=" + ric + ", price=" + price + ", quantity=" + quantity + "]";
+		return "Order [id=" + id + ", ric=" + ric + ", price=" + price + ", quantity=" + quantity + "]";
 	}
 }

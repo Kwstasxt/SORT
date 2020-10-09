@@ -2,18 +2,51 @@ package com.mthree.models;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="traders")
 public class Trader {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "trader_id")
+	private int id; 
+	
+	@Column(name="username")
 	private String username;
 	
+	@Column(name="password")
 	private String password;
 	
+	@Column(name="name")
+	private String name;
+	
+	@OneToMany
 	private List<OrderBook> orderBooks;
+	
+	public Trader() {}
 
-	public Trader(String username, String password, List<OrderBook> orderBooks) {
+	public Trader(int id, String username, String password, String name, List<OrderBook> orderBooks) {
+		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.name = name;
 		this.orderBooks = orderBooks;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -31,6 +64,14 @@ public class Trader {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public List<OrderBook> getOrderBooks() {
 		return orderBooks;
@@ -42,6 +83,6 @@ public class Trader {
 
 	@Override
 	public String toString() {
-		return "Trader [username=" + username + ", password=" + password + ", orderBooks=" + orderBooks + "]";
+		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name + ", orderBooks=" + orderBooks + "]";
 	}
 }
