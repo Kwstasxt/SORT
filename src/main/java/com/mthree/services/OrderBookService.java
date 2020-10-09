@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mthree.daos.OrderBookDAO;
-import com.mthree.daos.OrderBookRepository;
 import com.mthree.models.Order;
 import com.mthree.models.OrderBook;
+import com.mthree.repositories.OrderBookRepository;
 
 @Service
 public class OrderBookService implements OrderBookDAO {

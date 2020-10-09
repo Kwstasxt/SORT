@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,16 +30,21 @@ public class Trader {
 	@Column(name="name")
 	private String name;
 	
+	@Column(name="role")
+	@Enumerated(value=EnumType.STRING)
+	private Role role;
+	
 	@OneToMany
 	private List<OrderBook> orderBooks;
 	
 	public Trader() {}
 
-	public Trader(int id, String username, String password, String name, List<OrderBook> orderBooks) {
+	public Trader(int id, String username, String password, String name, Role role, List<OrderBook> orderBooks) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.name = name;
+		this.role = role;
 		this.orderBooks = orderBooks;
 	}
 	
@@ -72,6 +79,14 @@ public class Trader {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 	public List<OrderBook> getOrderBooks() {
 		return orderBooks;
@@ -83,6 +98,6 @@ public class Trader {
 
 	@Override
 	public String toString() {
-		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name + ", orderBooks=" + orderBooks + "]";
+		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name + ", role=" + role + ", orderBooks=" + orderBooks + "]";
 	}
 }

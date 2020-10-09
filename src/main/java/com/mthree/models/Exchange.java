@@ -26,6 +26,7 @@ public class Exchange {
 	@OneToMany
 	private List<OrderBook> orderBooks;
 	
+	// total of all transactions in a day
 	@Column(name="todays_trade_value")
 	private BigDecimal todaysTradeValue;
 	
