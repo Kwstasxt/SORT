@@ -10,7 +10,6 @@ public class SortService implements SortDAO {
 	@Override
 	public void executeTrade() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

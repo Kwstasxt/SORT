@@ -17,19 +17,17 @@ public class OrderBookService implements OrderBookDAO {
 	private OrderBookRepository orderBookRepository;
 
 	@Override
-	public void newOrder(Order o) {
+	public void addOrder(Order o) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void cancelOrder(Order o) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@Override
-	public List<OrderBook> getOrders() {
+	public List<OrderBook> getOrderBooks() {
 		return orderBookRepository.findAll();
 	}
 

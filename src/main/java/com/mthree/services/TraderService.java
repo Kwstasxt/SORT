@@ -6,6 +6,18 @@ import com.mthree.daos.TraderDAO;
 
 @Service
 public class TraderService implements TraderDAO {
+	
+	@Override
+	public void login() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void register() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public String hashPassword(String password) {
@@ -26,5 +38,4 @@ public class TraderService implements TraderDAO {
 //		return BCrypt.checkpw(candidate, hashedPassword);
 		return false;
 	}
-
 }

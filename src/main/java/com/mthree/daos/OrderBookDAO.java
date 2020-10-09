@@ -7,9 +7,8 @@ import com.mthree.models.OrderBook;
 
 public interface OrderBookDAO {
 	
-	void newOrder(Order o);
+	void addOrder(Order o);
 	void cancelOrder(Order o);
-	
-	List<OrderBook> getOrders();
+	List<OrderBook> getOrderBooks();
 
 }
