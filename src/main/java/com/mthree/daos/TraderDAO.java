@@ -6,5 +6,6 @@ public interface TraderDAO {
 	
 	Trader addTrader(Trader user);
 	Trader findByUsername(String username);
-
+	void removeTrader(Trader t);
+	
 }

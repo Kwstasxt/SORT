@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .formLogin()
             .loginPage("/login")
-            .defaultSuccessUrl("/welcome")
+            .defaultSuccessUrl("/welcome") // TODO: change to user home screen url
             .permitAll()
             .and()
             .logout().permitAll();

@@ -29,4 +29,9 @@ public class TraderService implements TraderDAO {
 	public Trader findByUsername(String username) {
 		return traderRepository.findByUsername(username);
 	}
+	
+	@Override
+	public void removeTrader(Trader t) {
+		traderRepository.delete(t);
+	}
 }
