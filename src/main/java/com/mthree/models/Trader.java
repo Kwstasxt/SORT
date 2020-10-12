@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="traders")
@@ -26,6 +27,9 @@ public class Trader {
 	
 	@Column(name="password")
 	private String password;
+	
+	@Transient
+    private String passwordConfirm;
 	
 	@Column(name="name")
 	private String name;
@@ -71,6 +75,14 @@ public class Trader {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+    }
 	
 	public String getName() {
 		return name;

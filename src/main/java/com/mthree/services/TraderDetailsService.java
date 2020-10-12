@@ -27,5 +27,4 @@ public class TraderDetailsService implements UserDetailsService {
          
         return new TraderUserDetails(user);
 	}
-
 }

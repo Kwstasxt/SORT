@@ -1,6 +1,8 @@
-package com.mthree.configs;
+package com.mthree.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.*;
 import org.springframework.security.config.annotation.authentication.builders.*;
 import org.springframework.security.config.annotation.web.builders.*;
@@ -41,10 +43,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-            .anyRequest().authenticated()
+//            .anyRequest().authenticated()
+            .antMatchers("/").permitAll() // this will be your welcome screen url
             .and()
-            .formLogin().permitAll()
+            .formLogin()
+            .loginPage("/login")
+            .defaultSuccessUrl("/welcome")
+            .permitAll()
             .and()
             .logout().permitAll();
+    }
+    
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
     }
 }
