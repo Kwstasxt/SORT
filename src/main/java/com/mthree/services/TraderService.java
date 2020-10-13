@@ -18,6 +18,11 @@ public class TraderService implements TraderDAO {
 	@Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	
+	/** 
+	 * @param t
+	 * @return Trader
+	 */
 	@Override
 	public Trader addTrader(Trader t) {
 		t.setPassword(bCryptPasswordEncoder.encode(t.getPassword()));
@@ -25,11 +30,20 @@ public class TraderService implements TraderDAO {
 		return traderRepository.save(t);
 	}
 	
+	
+	/** 
+	 * @param username
+	 * @return Trader
+	 */
 	@Override
 	public Trader findByUsername(String username) {
 		return traderRepository.findByUsername(username);
 	}
 	
+	
+	/** 
+	 * @param t
+	 */
 	@Override
 	public void removeTrader(Trader t) {
 		traderRepository.delete(t);

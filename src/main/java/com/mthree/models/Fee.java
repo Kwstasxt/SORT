@@ -35,30 +35,58 @@ public class Fee {
 		this.value = value;
 	}
 
+	
+	/** 
+	 * @return int
+	 */
 	public int getId() {
 		return id;
 	}
 
+	
+	/** 
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	
+	/** 
+	 * @return FeeType
+	 */
 	public FeeType getType() {
 		return type;
 	}
 
+	
+	/** 
+	 * @param type
+	 */
 	public void setType(FeeType type) {
 		this.type = type;
 	}
 
+	
+	/** 
+	 * @return BigDecimal
+	 */
 	public BigDecimal getValue() {
 		return value;
 	}
 
+	
+	/** 
+	 * @param value
+	 */
 	public void setValue(BigDecimal value) {
 		this.value = value;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	@Override
 	public String toString() {
 		return "Fee [id=" + id + ", type=" + type + ", value=" + value + "]";

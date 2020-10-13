@@ -31,101 +31,147 @@ public class Trader {
 	@Transient
     private String passwordConfirm;
 	
-	@Column(name="name")
-	private String name;
-	
 	@Column(name="role")
 	@Enumerated(value=EnumType.STRING)
 	private Role role;
 	
 	@OneToMany
-	private List<OrderBook> orderBooks;
+	private List<Order> orders;
 	
 	public Trader() {}
 
-	public Trader(int id, String username, String password, String name, Role role, List<OrderBook> orderBooks) {
+	public Trader(int id, String username, String password, Role role, List<Order> orders) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
-		this.name = name;
 		this.role = role;
-		this.orderBooks = orderBooks;
+		this.orders = orders;
 	}
 	
+	
+	/** 
+	 * @return int
+	 */
 	public int getId() {
 		return id;
 	}
 	
+	
+	/** 
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	
+	/** 
+	 * @param username
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	
+	/** 
+	 * @param password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 	
+	
+	/** 
+	 * @return String
+	 */
 	public String getPasswordConfirm() {
         return passwordConfirm;
     }
 
-    public void setPasswordConfirm(String passwordConfirm) {
+    
+	/** 
+	 * @param passwordConfirm
+	 */
+	public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
     }
 	
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 	
+	/** 
+	 * @return Role
+	 */
 	public Role getRole() {
 		return role;
 	}
 
+	
+	/** 
+	 * @param role
+	 */
 	public void setRole(Role role) {
 		this.role = role;
 	}
 
-	public List<OrderBook> getOrderBooks() {
-		return orderBooks;
+	
+	/** 
+	 * @return List<Order>
+	 */
+	public List<Order> getOrders() {
+		return orders;
 	}
 
-	public void setOrderBooks(List<OrderBook> orderBooks) {
-		this.orderBooks = orderBooks;
+	
+	/** 
+	 * @param orders
+	 */
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	@Override
 	public String toString() {
-		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name + ", role=" + role + ", orderBooks=" + orderBooks + "]";
+		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + ", orders=" + orders + "]";
 	}
 
+	
+	/** 
+	 * @return int
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((orderBooks == null) ? 0 : orderBooks.hashCode());
+		result = prime * result + ((orders == null) ? 0 : orders.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
+	
+	/** 
+	 * @param obj
+	 * @return boolean
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -135,24 +181,15 @@ public class Trader {
 		if (getClass() != obj.getClass())
 			return false;
 		Trader other = (Trader) obj;
-		if (id != other.id)
-			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (orders == null) {
+			if (other.orders != null)
 				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (orderBooks == null) {
-			if (other.orderBooks != null)
-				return false;
-		} else if (!orderBooks.equals(other.orderBooks))
+		} else if (!orders.equals(other.orders))
 			return false;
 		if (password == null) {
 			if (other.password != null)
 				return false;
 		} else if (!password.equals(other.password))
-			return false;
-		if (role != other.role)
 			return false;
 		if (username == null) {
 			if (other.username != null)
@@ -161,5 +198,5 @@ public class Trader {
 			return false;
 		return true;
 	}
-
+	
 }

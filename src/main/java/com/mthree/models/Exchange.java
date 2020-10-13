@@ -39,38 +39,74 @@ public class Exchange {
 		this.todaysTradeValue = todaysTradeValue;
 	}
 	
+	
+	/** 
+	 * @return int
+	 */
 	public int getId() {
 		return id;
 	}
 
+	
+	/** 
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	
+	/** 
+	 * @return List<Fee>
+	 */
 	public List<Fee> getFeeLadder() {
 		return feeLadder;
 	}
 
+	
+	/** 
+	 * @param feeLadder
+	 */
 	public void setFeeLadder(List<Fee> feeLadder) {
 		this.feeLadder = feeLadder;
 	}
 
+	
+	/** 
+	 * @return List<OrderBook>
+	 */
 	public List<OrderBook> getOrderBooks() {
 		return orderBooks;
 	}
 
+	
+	/** 
+	 * @param orderBooks
+	 */
 	public void setOrderBooks(List<OrderBook> orderBooks) {
 		this.orderBooks = orderBooks;
 	}
 
+	
+	/** 
+	 * @return BigDecimal
+	 */
 	public BigDecimal getTodaysTradeValue() {
 		return todaysTradeValue;
 	}
 
+	
+	/** 
+	 * @param todaysTradeValue
+	 */
 	public void setTodaysTradeValue(BigDecimal todaysTradeValue) {
 		this.todaysTradeValue = todaysTradeValue;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	@Override
 	public String toString() {
 		return "Exchange [id=" + id + ", feeLadder=" + feeLadder + ", orderBooks=" + orderBooks + ", todaysTradeValue="

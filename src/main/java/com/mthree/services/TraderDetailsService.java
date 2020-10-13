@@ -16,6 +16,12 @@ public class TraderDetailsService implements UserDetailsService {
 	@Autowired
 	private TraderRepository traderRepository;
 
+	
+	/** 
+	 * @param username
+	 * @return UserDetails
+	 * @throws UsernameNotFoundException
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		

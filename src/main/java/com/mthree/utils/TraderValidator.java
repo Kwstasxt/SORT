@@ -18,11 +18,21 @@ public class TraderValidator implements Validator {
     @Autowired
     private TraderService traderService;
 
+    
+    /** 
+     * @param aClass
+     * @return boolean
+     */
     @Override
     public boolean supports(Class<?> aClass) {
         return Trader.class.equals(aClass);
     }
 
+    
+    /** 
+     * @param o
+     * @param errors
+     */
     @Override
     public void validate(Object o, Errors errors) {
     	

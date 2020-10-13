@@ -1,10 +1,11 @@
 package com.mthree.daos;
 
+import java.math.BigDecimal;
+
+import com.mthree.models.Exchange;
+
 public interface ExchangeDAO {
 	
-	void buyOrder();
-	void sellOrder();
-	void acceptOrder(); // TODO: should this be here?
-	void sliceOrderSendToAlgo(); // TODO: should this be here?
-
+	BigDecimal calculateTodaysTradeValue(int exchangeId);
+	Exchange findExchange(int exchangeId);
 }

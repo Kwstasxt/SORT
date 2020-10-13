@@ -25,6 +25,11 @@ public class TraderController {
     @Autowired
     private TraderValidator traderValidator;
 
+    
+    /** 
+     * @param model
+     * @return String
+     */
     @GetMapping("/registration")
     public String registration(Model model) {
         
@@ -33,6 +38,12 @@ public class TraderController {
         return "registration";
     }
 
+    
+    /** 
+     * @param userForm
+     * @param bindingResult
+     * @return String
+     */
     @PostMapping("/registerUser")
     public String registerUser(@ModelAttribute("userForm") Trader userForm, BindingResult bindingResult) {
         
@@ -49,6 +60,13 @@ public class TraderController {
         return "redirect:/welcome";
     }
     
+    
+    /** 
+     * @param model
+     * @param error
+     * @param logout
+     * @return String
+     */
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {
     	
@@ -63,6 +81,11 @@ public class TraderController {
         return "login";
     }
 
+    
+    /** 
+     * @param model
+     * @return String
+     */
     // user home screen
     @GetMapping({"/", "/welcome"})
     public String welcome(Model model) {

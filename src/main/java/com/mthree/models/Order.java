@@ -21,7 +21,8 @@ public class Order {
 	private int id;
 	
 	@Column(name="ric")
-	private String ric;
+	@Enumerated(value=EnumType.STRING)
+	private Ric ric;
 	
 	@Column(name="price")
 	private BigDecimal price;
@@ -35,7 +36,7 @@ public class Order {
 	
 	public Order() {}
 	
-	public Order(int id, String ric, BigDecimal price, int quantity, OrderType type) {
+	public Order(int id, Ric ric, BigDecimal price, int quantity, OrderType type) {
 		this.id = id;
 		this.ric = ric;
 		this.price = price;
@@ -43,46 +44,90 @@ public class Order {
 		this.type = type;
 	}
 	
+	
+	/** 
+	 * @return int
+	 */
 	public int getId() {
 		return id;
 	}
 
+	
+	/** 
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public String getRic() {
+	
+	/** 
+	 * @return String
+	 */
+	public Ric getRic() {
 		return ric;
 	}
 
-	public void setRic(String ric) {
+	
+	/** 
+	 * @param ric
+	 */
+	public void setRic(Ric ric) {
 		this.ric = ric;
 	}
 
+	
+	/** 
+	 * @return BigDecimal
+	 */
 	public BigDecimal getPrice() {
 		return price;
 	}
 
+	
+	/** 
+	 * @param price
+	 */
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
+	
+	/** 
+	 * @return int
+	 */
 	public int getQuantity() {
 		return quantity;
 	}
 
+	
+	/** 
+	 * @param quantity
+	 */
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 	
+	
+	/** 
+	 * @return OrderType
+	 */
 	public OrderType getType() {
 		return type;
 	}
 
+	
+	/** 
+	 * @param type
+	 */
 	public void setType(OrderType type) {
 		this.type = type;
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", ric=" + ric + ", price=" + price + ", quantity=" + quantity + "]";

@@ -22,6 +22,10 @@ public class SecurityService implements SecurityDAO {
 
 	private static final Logger logger = LoggerFactory.getLogger(SecurityService.class);
 
+    
+    /** 
+     * @return String
+     */
     @Override
     public String findLoggedInUsername() {
         Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
@@ -32,6 +36,11 @@ public class SecurityService implements SecurityDAO {
         return null;
     }
 
+    
+    /** 
+     * @param username
+     * @param password
+     */
     @Override
     public void autoLogin(String username, String password) {
     	TraderUserDetails userDetails = (TraderUserDetails) traderDetailsService.loadUserByUsername(username);

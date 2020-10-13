@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GlobalLogger {
+
     static Logger logger;
     Handler fileHandler;
 
@@ -17,6 +18,10 @@ public class GlobalLogger {
         logger.addHandler(fileHandler);
     }
 
+    
+    /** 
+     * @return Logger
+     */
     private static Logger getLogger() {
         if (logger == null) {
             try {
@@ -28,6 +33,11 @@ public class GlobalLogger {
         return logger;
     }
 
+    
+    /** 
+     * @param level
+     * @param msg
+     */
     public static void log(Level level, String msg) {
         getLogger().log(level, msg);
     }

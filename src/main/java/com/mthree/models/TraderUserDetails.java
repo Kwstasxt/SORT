@@ -16,37 +16,65 @@ public class TraderUserDetails implements UserDetails {
 		this.user = user;
 	}
 
+	
+	/** 
+	 * @return Collection<? extends GrantedAuthority>
+	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
         return Arrays.asList(authority);
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	@Override
 	public String getPassword() {
 		return user.getPassword();
 	}
 
+	
+	/** 
+	 * @return String
+	 */
 	@Override
 	public String getUsername() {
 		return user.getUsername();
 	}
 
+	
+	/** 
+	 * @return boolean
+	 */
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
+	
+	/** 
+	 * @return boolean
+	 */
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
+	
+	/** 
+	 * @return boolean
+	 */
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
+	
+	/** 
+	 * @return boolean
+	 */
 	@Override
 	public boolean isEnabled() {
 		return true;

@@ -85,7 +85,7 @@ public class TraderControllerTest {
     	assertNotEquals(unencryptedPassword, encryptedPassword);
     	
     	// test admin role is added
-    	assertEquals(dbTrader.getRole(), Role.ROLE_ADMIN);
+    	assertEquals(Role.ROLE_ADMIN, dbTrader.getRole());
     	
     	// register invalid user 
         
