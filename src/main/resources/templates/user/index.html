@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/layout}">
+<head>
+<title>Index</title>
+<link rel="stylesheet" href="main.css">
+</head>
+<body>
+	<!--  <div th:replace="fragments/header :: header"></div>-->
+	<div layout:fragment="content" th:remove="tag">
+		<h1>Welcome</h1>
+		<p>This is a welcome page</p>
+
+		<br> <br>
+		<div>
+			<a id="registerButton" href="/user/registration" title="reg">
+				<button>Register</button>
+			</a>
+		</div>
+		<br> <br>
+
+		<div>
+			<a id="loginButton" href="/user/login" title="login">
+				<button>Login</button>
+			</a>
+		</div>
+	</div>
+
+</body>
+</html>

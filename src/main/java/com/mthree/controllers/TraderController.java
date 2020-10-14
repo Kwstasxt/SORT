@@ -26,40 +26,44 @@ public class TraderController {
     private TraderValidator traderValidator;
 
     
+    // initial screen
+    @GetMapping({"/", "/user/index"})
+    public String welcome(Model model) {
+        return "/user/index";
+    }
+    
     /** 
      * @param model
      * @return String
      */
-    @GetMapping("/registration")
+    @GetMapping("/user/registration")
     public String registration(Model model) {
         
     	model.addAttribute("userForm", new Trader());
 
-        return "registration";
+        return "/user/add-trader";
     }
 
-    
     /** 
      * @param userForm
      * @param bindingResult
      * @return String
      */
-    @PostMapping("/registerUser")
+    @PostMapping("/user/add-trader")
     public String registerUser(@ModelAttribute("userForm") Trader userForm, BindingResult bindingResult) {
-        
+    	//System.out.println(userForm);
     	traderValidator.validate(userForm, bindingResult);
-
+    	//System.out.println(userForm);
         if (bindingResult.hasErrors()) {
-            return "registration";
+            return "/user/add-trader";
         }
 
         traderService.addTrader(userForm);
 
         securityService.autoLogin(userForm.getUsername(), userForm.getPasswordConfirm());
 
-        return "redirect:/welcome";
+        return "redirect:/user/index";
     }
-    
     
     /** 
      * @param model
@@ -67,28 +71,32 @@ public class TraderController {
      * @param logout
      * @return String
      */
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String login(Model model, String error, String logout) {
+    	//System.out.println("loginnnn");
     	
     	if (error != null) {
     		model.addAttribute("error", "Your username and password is invalid.");
+    		
     	}
             
         if (logout != null) {
         	model.addAttribute("message", "You have been logged out successfully.");
+        	
         }
         
-        return "login";
+       return "/user/login";
     }
 
-    
     /** 
      * @param model
      * @return String
      */
     // user home screen
-    @GetMapping({"/", "/welcome"})
-    public String welcome(Model model) {
-        return "index";
+    @GetMapping("/user/homepage")
+    public String homepage(Model model) {
+    	 return "/user/homepage";
     }
+  
+    
 }

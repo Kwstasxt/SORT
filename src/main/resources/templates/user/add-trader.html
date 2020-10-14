@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Create an account</title>
+
+<link href="${contextPath}/resources/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="${contextPath}/resources/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+	<div class="container">
+		<h1>Registration page</h1>
+
+
+
+		<form action="#" th:action="@{/user/add-trader}"
+			th:object="${userForm}" method="post">
+
+			<h2>Create your account</h2>
+			<div>
+				<label>Username</label> <input th:field="*{username}" />
+				<p th:each="error: ${#fields.errors('username')}" th:text="${error}">Validation
+					error</p>
+			</div>
+			<br>
+			<div>
+				<label>Password</label> <input type="password"
+					th:field="*{password}" />
+				<p th:each="error : ${#fields.errors('password')}"
+					th:text="${error}">Validation error</p>
+			</div>
+			<br>
+			<div>
+				<label>Confirm Password</label> <input type="password"
+					th:field="*{passwordConfirm}" />
+			</div>
+			<br> <br>
+
+			<button type="submit">Register</button>
+
+
+
+		</form>
+
+
+
+	</div>
+
+	<div class="container signin">
+		<p>
+			Already have an account? <a href="login">Sign in</a>.
+		</p>
+	</div>
+
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
+</body>
+</html>

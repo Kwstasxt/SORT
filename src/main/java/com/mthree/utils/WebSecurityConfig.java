@@ -66,12 +66,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-//            .anyRequest().authenticated()
+  //          
             .antMatchers("/").permitAll() // this will be your welcome screen url
+            //.antMatchers("/user/homepage").hasRole("USER") // this will be only for user
+           // .anyRequest().authenticated()
             .and()
             .formLogin()
-            .loginPage("/login")
-            .defaultSuccessUrl("/welcome") // TODO: change to user home screen url
+            //.loginProcessingUrl("/perform_login")
+            //.defaultSuccessUrl("/user/homepage.html", true)
+            .loginPage("/user/login")
+            .defaultSuccessUrl("/user/homepage") // TODO: change to user home screen url
             .permitAll()
             .and()
             .logout().permitAll();
