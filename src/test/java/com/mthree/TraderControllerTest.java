@@ -10,12 +10,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 
 import com.mthree.controllers.TraderController;
+import com.mthree.dtos.TraderDTO;
 import com.mthree.models.Role;
 import com.mthree.models.Trader;
 import com.mthree.repositories.TraderRepository;
@@ -37,22 +39,35 @@ public class TraderControllerTest {
 	
 	@Mock
     private TraderValidator tv;
+
+    @Mock
+    private ModelMapper modelMapperMock;
 	
 	@InjectMocks
 	private TraderController tc = new TraderController();
 	
 	@Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
-	private Trader t;
+
+    @Autowired
+    private ModelMapper modelMapper;
+    
+    private Trader t;
+	private TraderDTO dto;
 	private BindingResult br;
 	
 	@BeforeEach
     void setUp() {
-		
+        
         t = new Trader();
         t.setUsername("ThisIsATest");
         t.setPassword("ThisIsATest");
+        t.setPasswordConfirm("ThisIsATest");
+
+        dto = new TraderDTO();
+        dto.setUsername(t.getUsername());
+        dto.setPassword(t.getPassword());
+        dto.setPasswordConfirm(t.getPasswordConfirm());
         
         br = mock(BindingResult.class);
         
@@ -65,6 +80,7 @@ public class TraderControllerTest {
         when(ts.addTrader(t)).thenReturn(newTrader);
         when(ts.findByUsername(t.getUsername())).thenReturn(newTrader);
         when(ss.findLoggedInUsername()).thenReturn(t.getUsername());
+        when(modelMapperMock.map(dto, Trader.class)).thenReturn(t);
     }
     
     @Test
@@ -73,7 +89,7 @@ public class TraderControllerTest {
     	// register valid user
         when(br.hasErrors()).thenReturn(false);
         
-        tc.registerUser(t, br);
+        tc.registerUser(dto, br);
         
         Trader dbTrader = ts.findByUsername(t.getUsername());
         
@@ -88,14 +104,43 @@ public class TraderControllerTest {
     	assertEquals(Role.ROLE_ADMIN, dbTrader.getRole());
     	
     	// register invalid user 
-        
-        Trader t2 = new Trader();
-        t2.setUsername("Test");
-        t2.setPassword("");
+        TraderDTO dto2 = new TraderDTO();
+        dto2.setId(2);
+        dto2.setUsername("ThisIsATest2");
+        dto2.setPassword("ThisIsATest2");
+        dto2.setPasswordConfirm("ThisIsATest2");
         when(br.hasErrors()).thenReturn(true);
         
-        tc.registerUser(t2, br);
+        tc.registerUser(dto2, br);
         
-        assertNull(ts.findByUsername(t2.getUsername()));
+        assertNull(ts.findByUsername(dto2.getUsername()));
+    }
+
+    @Test
+    public void testConvertToEntity() {
+        
+        TraderDTO traderDTO = new TraderDTO(3, "test", "test", "test");
+
+        Trader trader = modelMapper.map(traderDTO, Trader.class);
+        
+        assertEquals(traderDTO.getId(), trader.getId());
+        assertEquals(traderDTO.getPassword(), trader.getPassword());
+        assertEquals(traderDTO.getPasswordConfirm(), trader.getPasswordConfirm());
+    }
+
+    @Test
+    public void testConvertToDto() {
+
+        Trader trader = new Trader();
+        trader.setId(1);
+        trader.setUsername("test");
+        trader.setPassword("test");
+        trader.setPasswordConfirm("test");
+
+        TraderDTO traderDTO = modelMapper.map(trader, TraderDTO.class);
+
+        assertEquals(trader.getId(), traderDTO.getId());
+        assertEquals(trader.getPassword(), traderDTO.getPassword());
+        assertEquals(trader.getPasswordConfirm(), traderDTO.getPasswordConfirm());
     }
 }

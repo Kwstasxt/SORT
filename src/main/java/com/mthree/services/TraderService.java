@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import com.mthree.daos.TraderDAO;
 import com.mthree.models.Role;
 import com.mthree.models.Trader;
@@ -38,6 +40,23 @@ public class TraderService implements TraderDAO {
 	@Override
 	public Trader findByUsername(String username) {
 		return traderRepository.findByUsername(username);
+	}
+
+	
+	/** 
+	 * @param traderId
+	 * @return Trader
+	 */
+	@Override
+	public Trader findByTraderId(int traderId) {
+
+		Optional<Trader> trader = traderRepository.findById(traderId);
+		
+		if (trader.isPresent()) {
+			return trader.get();
+		}
+
+		return null;
 	}
 	
 	

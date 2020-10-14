@@ -24,3 +24,7 @@
   padding: 1em;
   border: solid;
 }
+
+.error { 
+  color:red; 
+}

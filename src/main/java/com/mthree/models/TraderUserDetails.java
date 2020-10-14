@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class TraderUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
-	private Trader user;
+	private transient Trader user;
 	
 	public TraderUserDetails(Trader user) {
 		this.user = user;

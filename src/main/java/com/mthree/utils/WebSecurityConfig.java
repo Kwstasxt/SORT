@@ -1,5 +1,6 @@
 package com.mthree.utils;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,14 @@ import com.mthree.services.TraderDetailsService;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    
+    /** 
+     * @return ModelMapper
+     */
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
  
     
     /** 
@@ -65,17 +74,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-  //          
-            .antMatchers("/").permitAll() // this will be your welcome screen url
-            //.antMatchers("/user/homepage").hasRole("USER") // this will be only for user
-           // .anyRequest().authenticated()
+        http.authorizeRequests()        
+            .antMatchers("/").permitAll() // welcome screen url
+            // .anyRequest().authenticated()
             .and()
             .formLogin()
             //.loginProcessingUrl("/perform_login")
-            //.defaultSuccessUrl("/user/homepage.html", true)
             .loginPage("/user/login")
-            .defaultSuccessUrl("/user/homepage") // TODO: change to user home screen url
+            .defaultSuccessUrl("/user/homepage") // home screen url
             .permitAll()
             .and()
             .logout().permitAll();

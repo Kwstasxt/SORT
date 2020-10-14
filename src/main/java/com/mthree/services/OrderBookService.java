@@ -25,6 +25,8 @@ public class OrderBookService implements OrderBookDAO {
 	@Autowired
 	private OrderService orderService;
 
+	private Random random = new Random();
+
 	/** 
 	 * @param orderBookId
 	 * @param o
@@ -89,22 +91,21 @@ public class OrderBookService implements OrderBookDAO {
 	public List<OrderBook> generateRandomOrders() {
 
 		Ric[] ricTypes = Ric.values();
-		int index;
 		BigDecimal price;
 		int quantity;
-		Random random = new Random();
 
 		ArrayList<OrderBook> orderBookList = new ArrayList<>();
 
 		// create 100 buy/sell orders for each Instrument type.
 		for (int i = 0; i < ricTypes.length; i++) {
+
 			ArrayList<Order> orders = new ArrayList<>();
+
 			for (int j = 0; j < 100; j++) {
 
 				//buy orders
 				quantity = random.nextInt() * 3000;
 				price = generatePrice(OrderType.BUY);
-				index = random.nextInt(ricTypes.length);
 
 				Order buyOrder = new Order();
 				buyOrder.setRic(ricTypes[i]);
@@ -116,7 +117,6 @@ public class OrderBookService implements OrderBookDAO {
 				// sell orders
 				quantity = random.nextInt() * 3000;
 				price = generatePrice(OrderType.SELL);
-				index = random.nextInt(ricTypes.length);
 
 				Order sellOrder = new Order();
 				sellOrder.setRic(ricTypes[i]);
@@ -146,12 +146,11 @@ public class OrderBookService implements OrderBookDAO {
 
 		int base = 500;
 		double modifier = (Math.random() / 5) + 0.95; // 95% - 115% modifier
+
 		if (orderType == OrderType.BUY) {
 			modifier = (Math.random() / 5) + 0.85; // 85% - 105% modifier
 		}
 
-		BigDecimal randomPrice = BigDecimal.valueOf(base * modifier);
-
-		return randomPrice;
+		return BigDecimal.valueOf(base * modifier);
 	}
 }

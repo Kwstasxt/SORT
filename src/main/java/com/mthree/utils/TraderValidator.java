@@ -3,9 +3,6 @@ package com.mthree.utils;
 import com.mthree.models.Trader;
 import com.mthree.services.TraderService;
 
-import java.lang.Class;
-import java.lang.Object;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

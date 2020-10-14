@@ -1,4 +1,4 @@
-package com.mthree;
+package com.mthree.utils;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
