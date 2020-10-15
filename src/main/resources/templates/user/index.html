@@ -1,31 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	xmlns:th="http://www.thymeleaf.org"
-	layout:decorate="~{fragments/layout}">
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:th="http://www.thymeleaf.org"
+	  layout:decorate="~{fragments/layout}">
+
 <head>
-<title>Index</title>
-<link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}" />
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Sort Project</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link th:href="@{/assets/img/favicon.png}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+
+  <!-- Template Main CSS File -->
+  <link th:href="@{/assets/index/css/style.css}" rel="stylesheet" type="text/css">
+
+  <!-- =======================================================
+  * Template Name: Regna - v2.1.0
+  * Template URL: https://bootstrapmade.com/regna-bootstrap-onepage-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
 </head>
+
 <body>
-	<!--  <div th:replace="fragments/header :: header"></div>-->
-	<div layout:fragment="content" th:remove="tag">
-		<h1>Welcome</h1>
-		<p>This is a welcome page</p>
 
-		<br> <br>
-		<div>
-			<a id="registerButton" href="/user/registration" title="reg">
-				<button>Register</button>
-			</a>
-		</div>
-		<br> <br>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header-transparent">
+    <div class="container">
 
-		<div>
-			<a id="loginButton" href="/user/login" title="login">
-				<button>Login</button>
-			</a>
-		</div>
-	</div>
+      <div id="logo" class="pull-left">
+        <img th:src="@{/assets/img/logo.png}" alt="">
+      </div>
+    </div>
+  </header>
+  <!-- End Header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero">
+    <div class="hero-container" >
+      <h1>Sort Project</h1>
+      <h2>Team A: Anna, Isaac, Jade, Konstantinos</h2>
+      <a id="registerButton" href="/user/registration" title="reg" class="btn-get-started">Register</a>
+      <a id="loginButton" href="/user/login" title="login" class="btn-get-started">Login</a>
+    </div>
+  </section>
+  <!-- End Hero Section -->
+
+  <!-- Vendor JS Files -->
+  <script th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
 </body>
+
 </html>

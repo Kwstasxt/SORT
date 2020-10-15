@@ -1,55 +1,87 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+			xmlns:th="http://www.thymeleaf.org"
+			layout:decorate="~{fragments/layout}">
 <head>
-<meta charset="utf-8">
-<title>Create an account</title>
+	<title>Sort Project</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}" />
+	<!-- Favicons -->
+	<link th:href="@{/assets/img/favicon.png}" rel="icon">
+
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+
+	<!-- Vendor CSS Files -->
+	<link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+
+	<!-- Template Main CSS File -->
+	<link rel="stylesheet" type="text/css" th:href="@{/assets/register-login/css/util.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/assets/register-login/css/main.css}">
+
 </head>
+<body style="background-color: #f0edf0;">
 
-<body>
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form th:action="@{/user/add-trader}" th:object="${userForm}" method="post" class="login100-form validate-form">
 
-	<div class="container">
-		<h1>Registration page</h1>
+					<span class="login100-form-title p-b-43">
+						Trader Registration
+					</span>
 
-		<form action="#" th:action="@{/user/add-trader}"
-			th:object="${userForm}" method="post">
+					<!-- show notification on error -->
+					<div class="error" th:if="${param.error}">Invalid username or password.</div>
 
-			<h2>Create your account</h2>
-			<div>
-				<label>Username</label> <input th:field="*{username}" />
-				<p class="error" th:each="error: ${#fields.errors('username')}" th:text="${error}">Validation
-					error</p>
+					<!-- show notification of logout -->
+					<div class="error" th:if="${param.logout}">You have been logged out.</div>
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" th:field="*{username}">
+						<span class="label-input100">Username</span>
+					</div>
+
+					<p class="error" th:each="error: ${#fields.errors('username')}" th:text="${error}">Validation error</p>
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="password" th:field="*{password}">
+						<span class="label-input100">Password</span>
+					</div>
+
+					<p class="error" th:each="error : ${#fields.errors('password')}"
+							th:text="${error}">Validation error</p>
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="password" th:field="*{passwordConfirm}">
+						<span class="label-input100">Confirm Password</span>
+					</div>
+
+					<p class="error" th:each="error : ${#fields.errors('passwordConfirm')}"
+							th:text="${error}">Validation error</p>
+
+					<div class="container-login100-form-btn">
+						<input class="login100-form-btn" type="submit" value="Register" />
+					</div>
+
+					<div class="container-login100-form-back">
+						<a class="login100-form-back" href="/user/login">
+							Login
+						</a>
+					</div>
+				</form>
+
+				<div class="login100-more">
+					<img class="login100-more-img" th:src="@{/assets/img/trader.png}" alt="">
+				</div>
 			</div>
-			<br>
-			<div>
-				<label>Password</label> <input type="password"
-					th:field="*{password}" />
-				<p class="error" th:each="error : ${#fields.errors('password')}"
-					th:text="${error}">Validation error</p>
-			</div>
-			<br>
-			<div>
-				<label>Confirm Password</label> <input type="password"
-					th:field="*{passwordConfirm}" />
-				<p class="error" th:each="error: ${#fields.errors('passwordConfirm')}" th:text="${error}">Validation error</p>
-			</div>
-			<br> <br>
-
-			<button type="submit">Register</button>
-
-		</form>
-
+		</div>
 	</div>
 
-	<div class="container signin">
-		<p>
-			Already have an account? <a href="login">Sign in</a>.
-		</p>
-	</div>
+	<!-- Vendor JS Files -->
+	<script src="@{/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
 </body>
 </html>

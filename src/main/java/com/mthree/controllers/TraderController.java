@@ -31,13 +31,20 @@ public class TraderController {
     private ModelMapper modelMapper;
 
     
-    // initial screen
+    /** 
+     * User welcome page.
+     * 
+     * @param model
+     * @return String
+     */
     @GetMapping({"/", "/user/index"})
     public String welcome(Model model) {
         return "/user/index";
     }
     
     /** 
+     * User registration page.
+     * 
      * @param model
      * @return String
      */
@@ -50,6 +57,8 @@ public class TraderController {
     }
 
     /** 
+     * User registration success/fail.
+     * 
      * @param userForm
      * @param bindingResult
      * @return String
@@ -73,6 +82,8 @@ public class TraderController {
     }
     
     /** 
+     * User login page.
+     * 
      * @param model
      * @param error
      * @param logout
@@ -93,10 +104,11 @@ public class TraderController {
     }
 
     /** 
+     * User home page.
+     * 
      * @param model
      * @return String
      */
-    // user home screen
     @GetMapping("/user/homepage")
     public String homepage(Model model) {
     	 return "/user/homepage";
