@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en"
+			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+			xmlns:th="http://www.thymeleaf.org"
+			layout:decorate="~{fragments/layout}">
+<head>
+	<title>Sort Project</title>
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link th:href="@{/assets/img/favicon.png}" rel="icon">
+
+	<link rel="stylesheet" type="text/css" th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}">
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" th:href="@{/assets/home/css/util.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/assets/home/css/main.css}">
+
+</head>
+<body>
+	<div class="limiter">
+
+		<div class="page-header">
+
+			<img class="page-header-item" th:src="@{/assets/img/mthree_logo.png}" alt="">
+
+			<div class="page-header-2">
+				<a id="previousTradesButton" href="/user/previousTrades" title="previousTrades" class="btn-prev-trade">Previous Trades</a>
+
+				<a id="logoutButton" href="/user/logout" title="logout" class="btn-logout">Logout</a>
+			</div>
+		</div>
+
+		<div class="page-sub-header">
+			<h3 class="page-header-item-welcome">
+        <span class="welcome">Welcome</span> 
+        <!-- <span class="username" th:text="${trader.getUsername()}"></span> -->
+        <span class="username">username</span>
+      </h3>
+		</div>
+
+		<div class="container-table100">
+			<div class="stock-info">
+				<div class="current-stock">
+					<h3><span class="currentStock">Current stock: </span></h3>
+
+          <!-- <form th:action="@{/user/table}" th:object="${orderBook}" method="post"></form>
+            <select th:field="*{ric}" class="select-css">
+              <option th:each="ric : ${T(com.mthree.models.Ric).values()}"
+                  th:value="${ric}"
+                  th:text="${ric.getNotation()}">
+              </option>
+            </select>
+          </form> -->
+
+          <select class="select-css">
+						<option>GOOG</option>
+						<option>VOD</option>
+						<option>BT</option>
+          </select>
+          
+				</div>
+
+				<div class="stock-activity-container">
+					<div>
+						<h3 class="stock-activity">Overall stock activity:</h3>
+						<h4 class="stock-activity-info"><span class="orders">Orders: </span>  <span class="totalOrders">1,000</span></h4>
+						<h4 class="stock-activity-info"><span class="volume">Volume: </span> <span class="totalVolume">300,000</span></h4>
+					</div>
+				</div>
+			</div>
+
+			<div class="table-container">
+				<div class="wrap-table100">
+					<table class="table">
+					  <thead>
+					    <tr class="major-row header">
+					      <th id="buyOrders" colspan="4">BUY ORDERS</th>
+					      <th id="sellOrders" class="outlined" colspan="4">SELL ORDERS</th>
+					    </tr>
+					    <tr class="minor-row header">
+					      <th id="buyTime">TIME</th>
+					      <th id="buyMpid">MPID</th>
+					      <th id="buyQuantity">SHARES</th>
+					      <th id="buyPrice">BID</th>
+								<th id="sellPrice" class="outlined">ASK</th>
+								<th id="sellQuantity">SHARES</th>
+								<th id="sellMpid">MPID</th>
+								<th id="sellTime">TIME</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					    <tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+							<tr class="last-row">
+					      <td class="cell">12:00:00</td>
+					      <td class="cell">LSE</td>
+					      <td class="cell">100</td>
+					      <td class="cell">99.49</td>
+								<td class="cell outlined">99.51</td>
+					      <td class="cell">80</td>
+					      <td class="cell">NYSE</td>
+					      <td class="cell">12:05:00</td>
+					    </tr>
+					  </tbody>
+					</table>
+				</div>
+
+				<div class="buttons-container">
+					<a id="executeTradeButton" href="/user/executeTrade" title="executeTrade" class="btn-exec-trade">Execute Trade</a>
+				</div>
+
+			</div>
+
+
+		</div>
+	</div>
+
+  <script type="text/javascript" th:src="@{/assets/vendor/jquery/jquery-3.2.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/assets/vendor/bootstrap/js/bootstrap.min.js}"></script> 
+	<script type="text/javascript" th:src="@{/assets/home/js/main.js}"></script>
+
+</body>
+</html>

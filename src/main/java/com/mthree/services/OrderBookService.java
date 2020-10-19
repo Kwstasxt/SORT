@@ -153,4 +153,45 @@ public class OrderBookService implements OrderBookDAO {
 
 		return BigDecimal.valueOf(base * modifier);
 	}
+
+
+	
+	/** 
+	 * Calculate total number of orders for a given list of orderbooks.
+	 * 
+	 * @param orderBooks
+	 * @return int
+	 */
+	@Override
+	public int calculateNumberOfOrders(List<OrderBook> orderBooks) {
+
+		int numOfOrders = 0;
+
+		for (OrderBook orderBook : orderBooks) {
+			numOfOrders += orderBook.getOrders().size();
+		}
+
+		return numOfOrders;
+	}
+
+	
+	/** 
+	 * Calculate total volume for a given list of orderbooks.
+	 * 
+	 * @param orderBook
+	 * @return int
+	 */
+	@Override
+	public int calculateVolume(List<OrderBook> orderBooks) {
+
+		int volume = 0;
+
+		for (OrderBook orderBook : orderBooks) {
+			for (Order order : orderBook.getOrders()) {
+				volume += order.getQuantity();
+			}
+		}
+
+		return volume;
+	}
 }

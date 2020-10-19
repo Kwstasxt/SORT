@@ -15,8 +15,8 @@ public class Future extends Order {
 	
 	public Future() {}
 
-	public Future(int id, Ric ric, BigDecimal price, int quantity, OrderType type, LocalDateTime expiryDateTime) {
-		super(id, ric, price, quantity, type);
+	public Future(int id, Ric ric, BigDecimal price, int quantity, OrderType type, LocalDateTime submitTime, LocalDateTime expiryDateTime) {
+		super(id, ric, price, quantity, type, submitTime);
 		this.expiryDateTime = expiryDateTime;
 	}
 

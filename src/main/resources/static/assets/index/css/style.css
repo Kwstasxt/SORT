@@ -9,7 +9,7 @@
 # General
 --------------------------------------------------------------*/
 body {
-  background: #fff;
+  background: #f0edf0;
   color: #666666;
   font-family: "Open Sans", sans-serif;
 }
@@ -64,8 +64,12 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(52, 59, 64, 0.9);
 }
 
-#header #logo {
+#header #mthree_logo {
   float: left;
+}
+
+#header #alumni_logo {
+  float: right;
 }
 
 #header #logo h1 {

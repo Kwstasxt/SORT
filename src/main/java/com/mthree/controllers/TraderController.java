@@ -111,7 +111,7 @@ public class TraderController {
      */
     @GetMapping("/user/homepage")
     public String homepage(Model model) {
-    	 return "/user/homepage";
+    	 return "/user/home";
     }
 
     /** 
