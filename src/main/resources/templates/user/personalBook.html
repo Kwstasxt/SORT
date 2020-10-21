@@ -25,8 +25,8 @@
 			<img class="page-header-item" th:src="@{/assets/img/mthree_logo.png}" alt="">
 
 			<div class="page-header-2">
-				<!-- <a id="previousTradesButton" href="/user/previousTrades" title="previousTrades" class="btn-prev-trade">Previous Trades</a> -->
-
+				<a id="previousTradesButton" href="/user/home" title="previousTrades" class="btn-prev-trade">Return to Home
+					page</a>
 				<a id="logoutButton" href="/user/logout" title="logout" class="btn-logout">Logout</a>
 			</div>
 		</div>
@@ -45,14 +45,6 @@
                         <span class="currentStock">Current stock: </span>
                     </h3>
 
-                    <form th:action="@{/user/stock-info}" th:object="${orderBook}" method="post">
-                        <select th:field="*{ric}" class="select-css" onchange="this.form.submit()">
-                        <option th:each="ric : ${T(com.mthree.models.Ric).values()}"
-                            th:value="${ric}"
-                            th:text="${ric.getNotation()}">
-                        </option>
-                        </select>
-                    </form>
 
 				</div>
 
@@ -76,31 +68,34 @@
 					<table class="table">
 					  <thead>
 					    <tr class="major-row header">
-					      	<th id="buyOrders" colspan="4">BUY ORDERS</th>
+							<th id="ric" colspan="1">ORDER</th>
+					      	<th id="buyOrders" class="outlined" colspan="4">BUY ORDERS</th>
 					      	<th id="sellOrders" class="outlined" colspan="4">SELL ORDERS</th>
 					    </tr>
 					    <tr class="minor-row header">
-					      	<th id="buyTime">TIME</th>
-					      	<th id="buyMpid">MPID</th>
-					      	<th id="buyQuantity">SHARES</th>
-					      	<th id="buyPrice">BID</th>
-						  	<th id="sellPrice" class="outlined">ASK</th>
-						  	<th id="sellQuantity">SHARES</th>
-							<th id="sellMpid">MPID</th>
-							<th id="sellTime">TIME</th>
+							<th id="ric">RIC</th>
+							<th id="buyTime" class="outlined">TIME</th>
+							<th id="buyMpid">MPID</th>
+							<th id="buyQuantity">SHARES</th>
+							<th id="buyPrice">BID</th>
+							<th id="sellPrice" class="outlined">ASK</th>
+							<th id="sellQuantity">SHARES</th>
+						  	<th id="sellMpid">MPID</th>
+						  	<th id="sellTime">TIME</th>
+							
 					    </tr>
 					  </thead>
 					  <tbody>
-							<th:block th:each="trade, iterStat : ${tempTrades.keySet()}">
-                                <tr th:classappend="${iterStat.index != tempTrades.size() - 1} ? row : last-row">
-									<input type="hidden" id="tradeId" name="tradeId" th:value="${trade.getId()}">
-                                    <td class="cell" th:text="${trade.getBuyOrder().getSubmitTime().toLocalTime()}">buy order time</td>
-                                    <td class="cell" th:text="${tempTrades.get(trade).get(0).getNotation()}">buy order exchange id</td>
+							<th:block th:each="trade, iterStat : ${executedTrades.keySet()}">
+                                <tr th:classappend="${iterStat.index != executedTrades.size() - 1} ? row : last-row">
+									<td class="cell" th:text="${trade.getBuyOrder().getRic().getNotation()}">ric</td>
+                                    <td class="cell outlined" th:text="${trade.getBuyOrder().getSubmitTime().toLocalTime()}">buy order time</td>
+                                    <td class="cell" th:text="${executedTrades.get(trade).get(0).getNotation()}">buy order exchange id</td>
                                     <td class="cell" th:text="${trade.getBuyOrder().getQuantity()}">buy order quantity</td>
                                     <td class="cell" th:text="${trade.getBuyOrder().getPrice()}">buy order price</td>
                                     <td class="cell outlined" th:text="${trade.getSellOrder().getPrice()}">sell order price</td>
                                     <td class="cell"  th:text="${trade.getSellOrder().getQuantity()}">sell order quantity</td>
-                                    <td class="cell" th:text="${tempTrades.get(trade).get(1).getNotation()}">sell order exchange id</td>
+                                    <td class="cell" th:text="${executedTrades.get(trade).get(1).getNotation()}">sell order exchange id</td>
                                     <td class="cell" th:text="${trade.getSellOrder().getSubmitTime().toLocalTime()}">sell order time</td>
                                 </tr>
                             </th:block>
@@ -109,9 +104,7 @@
 				</div>
 
 				<div class="buttons-container">
-					<form  th:action="@{/user/executeTrade}" method="POST">
-						<button type="submit" id="executeTradeButton" name="executeTradeButton" title="executeTrade" class="btn-exec-trade">Execute Trade</button>
-					</form>
+                    <a id="homeButton" href="/user/home" title="backToHome" class="btn-back-home">Return to Home page</a>
 				</div>
 
 			</div>

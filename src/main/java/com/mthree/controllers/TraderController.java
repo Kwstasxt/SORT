@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mthree.dtos.OrderBookDTO;
 import com.mthree.dtos.TraderDTO;
 import com.mthree.models.ExchangeMpid;
+import com.mthree.models.Ric;
 import com.mthree.models.Trade;
 import com.mthree.models.Trader;
 import com.mthree.models.TraderUserDetails;
@@ -33,7 +34,7 @@ import com.mthree.utils.StockInfo;
 import com.mthree.utils.TraderValidator;
 
 @Controller
-@SessionAttributes("trader")
+@SessionAttributes({ "trader", "tempTrades", "selectedRic" })
 public class TraderController {
 	
 	@Autowired
@@ -58,7 +59,17 @@ public class TraderController {
     @ModelAttribute("trader")
 	public TraderUserDetails trader() {
 		return new TraderUserDetails();
-	}
+    }
+    
+    @ModelAttribute("tempTrades")
+    public Map<Trade, List<ExchangeMpid>> trades() {
+        return new HashMap<Trade, List<ExchangeMpid>>();
+    }
+
+    @ModelAttribute("selectedRic")
+    public Ric selectedRic() {
+        return Ric.values()[0];
+    }
     
     /** 
      * User welcome page.
@@ -140,7 +151,8 @@ public class TraderController {
      * @return String
      */
     @GetMapping("/user/home")
-    public String home(Model model, @ModelAttribute("trader") TraderUserDetails trader, @ModelAttribute("orderBook") OrderBookDTO orderBook) {
+    public String home(Model model, @ModelAttribute TraderUserDetails trader, @ModelAttribute("orderBook") OrderBookDTO orderBook,
+            @ModelAttribute("tempTrades") Map<Trade, List<ExchangeMpid>> tempTrades, @ModelAttribute("selectedRic") Ric selectedRic) {
 
         if (trader.getTrader() == null) {
             TraderUserDetails traderUd = (TraderUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -151,9 +163,10 @@ public class TraderController {
             HashMap<String, Object> stockInfoData = (HashMap<String, Object>) stockInfo.stockInfoLoader(null, traderUd.getTrader());
 
             @SuppressWarnings("unchecked")
-            Map<Trade, List<ExchangeMpid>> tempTrades = (Map<Trade, List<ExchangeMpid>>) stockInfoData.get("tempTrades");
+            Map<Trade, List<ExchangeMpid>> tempTradesLocal = (Map<Trade, List<ExchangeMpid>>) stockInfoData.get("tempTrades");
 
-            model.addAttribute("tempTrades", tempTrades);
+            model.addAttribute("selectedRic", Ric.values()[0]);
+            model.addAttribute("tempTrades", tempTradesLocal);
             model.addAttribute("totalOrders", stockInfoData.get("totalOrders"));
             model.addAttribute("totalVolume", stockInfoData.get("totalVolume"));
 

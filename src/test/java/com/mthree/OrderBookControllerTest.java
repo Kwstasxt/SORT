@@ -1,15 +1,11 @@
 package com.mthree;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.mthree.controllers.OrderBookController;
 import com.mthree.dtos.OrderBookDTO;
@@ -21,13 +17,9 @@ import com.mthree.models.OrderType;
 import com.mthree.models.Region;
 import com.mthree.models.Ric;
 import com.mthree.models.Sort;
-import com.mthree.models.Trade;
 import com.mthree.utils.StockInfo;
-import com.mthree.models.Trader;
-import com.mthree.models.TraderUserDetails;
 import com.mthree.repositories.OrderBookRepository;
 import com.mthree.services.OrderBookService;
-import com.mthree.services.SortService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +28,6 @@ import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
 @SpringBootTest
 public class OrderBookControllerTest {

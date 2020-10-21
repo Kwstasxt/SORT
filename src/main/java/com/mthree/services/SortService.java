@@ -6,16 +6,18 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.mthree.models.Exchange;
+import com.mthree.models.ExchangeMpid;
 import com.mthree.models.Order;
 import com.mthree.models.OrderBook;
 import com.mthree.models.OrderType;
 import com.mthree.models.Region;
 import com.mthree.models.Ric;
 import com.mthree.models.Sort;
-import com.mthree.daos.SortDAO;
 import com.mthree.models.Trade;
+import com.mthree.daos.SortDAO;
 import com.mthree.models.Trader;
 import com.mthree.repositories.SortRepository;
 
@@ -27,9 +29,6 @@ public class SortService implements SortDAO {
 
 	@Autowired
 	private ExchangeService exservice;
-
-	@Autowired
-	private TransactionService tservice;
 
 	@Autowired
 	private OrderService orderService;
@@ -50,6 +49,34 @@ public class SortService implements SortDAO {
 
 
 	@Override
+	public Map<Trade, List<ExchangeMpid>> tradePrice(Map<Trade, List<ExchangeMpid>> tempTrades) {
+		// Compares prices of two orders and is used in OrderBookController to deem the trade as executable or not
+		BigDecimal tradePrice = null;
+		for (Map.Entry<Trade, List<ExchangeMpid>> trade : tempTrades.entrySet()) {
+			BigDecimal buyPrice = trade.getKey().getBuyOrder().getPrice();
+			BigDecimal sellPrice = trade.getKey().getSellOrder().getPrice();
+			System.out.println("buyPrice" + buyPrice);
+			int res = buyPrice.compareTo(sellPrice);
+			
+
+			if(res == -1){
+				tradePrice = null;
+			} //sell>buy: therefore trade not allowed to be executed
+			if(res == 0){
+				tradePrice = (sellPrice.add(buyPrice)).divide(new BigDecimal(2));
+			} //sell==buy: trade can be executed
+			if(res == 1){
+				tradePrice = (sellPrice.add(buyPrice)).divide(new BigDecimal(2));
+			} //buy>sell: trade can be executed
+
+			trade.getKey().getBuyOrder().setPrice(tradePrice);
+			trade.getKey().getSellOrder().setPrice(tradePrice);
+
+			}
+			return tempTrades;
+
+	}
+	
 	public void executeTrade() {
 		
 	

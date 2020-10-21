@@ -10,6 +10,8 @@ $(document).ready(function () {
     $('#executeTradeButton').css({
       top: pos.top + 'px'
     });
+
+    $('#executeTradeButton').attr('value', this.querySelector("#tradeId").value);
   });
 
 });

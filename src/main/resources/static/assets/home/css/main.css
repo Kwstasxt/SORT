@@ -94,6 +94,10 @@ iframe {
   background: #f0edf0;
 }
 
+  .page-header-2 a {
+    margin: 0 1em;
+  }
+
 .page-sub-header {
   width: 100%;
   display: flex;
@@ -376,6 +380,10 @@ iframe {
   align-items: center;
 }
 
+.buttons-container form {
+  display: contents;
+}
+
 .btn-exec-trade {
   position: absolute;
   font-family: "Poppins", sans-serif;
@@ -455,4 +463,13 @@ iframe {
 
 .totalVolume {
   color: #32b5c9;
+}
+
+.success {
+  display: block;
+  text-align: center;
+}
+
+.execute-center {
+  text-align: center;
 }

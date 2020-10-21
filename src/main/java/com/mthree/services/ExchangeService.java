@@ -119,8 +119,6 @@ public class ExchangeService implements ExchangeDAO {
 		return mpid;
 	}
 	
-	
-	
 	/** 
 	 * @param orders
 	 * @param tradersOrder
