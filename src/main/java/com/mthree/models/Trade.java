@@ -1,5 +1,7 @@
 package com.mthree.models;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,13 +24,17 @@ public class Trade {
     
     @OneToOne
     private Order sellOrder;
+
+    @Column(name = "trade_date")
+    private LocalDateTime tradeDate;
     
     public Trade() {}
 
-    public Trade(int id, Order buyOrder, Order sellOrder) {
+    public Trade(int id, Order buyOrder, Order sellOrder, LocalDateTime tradeDate) {
         this.id = id;
         this.buyOrder = buyOrder;
         this.sellOrder = sellOrder;
+        this.tradeDate = tradeDate;
     }
 
     
@@ -80,11 +86,30 @@ public class Trade {
     }
 
     
+    
+    /** 
+     * @return LocalDateTime
+     */
+    public LocalDateTime getTradeDate() {
+        return tradeDate;
+    }
+
+    
+    /** 
+     * @param tradeDate
+     */
+    public void setTradeDate(LocalDateTime tradeDate) {
+        this.tradeDate = tradeDate;
+    }
+
+    
     /** 
      * @return String
      */
     @Override
     public String toString() {
-        return "Trade [buyOrder=" + buyOrder + ", id=" + id + ", sellOrder=" + sellOrder + "]";
+        return "Trade [buyOrder=" + buyOrder + ", id=" + id + ", sellOrder=" + sellOrder + ", tradeDate=" + tradeDate
+                + "]";
     }
+
 }

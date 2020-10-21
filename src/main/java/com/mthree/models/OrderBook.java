@@ -24,10 +24,11 @@ public class OrderBook {
 	@Column(name="ric")
 	@Enumerated(value=EnumType.STRING)
 	private Ric ric;
-	
+
 	@OneToMany
 	private List<Order> orders;
 
+	
 	public OrderBook() {} 
 	
 	public OrderBook(int id, Ric ric, List<Order> orders) {

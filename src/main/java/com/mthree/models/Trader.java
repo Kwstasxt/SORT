@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,17 +35,22 @@ public class Trader {
 	@Column(name="role")
 	@Enumerated(value=EnumType.STRING)
 	private Role role;
+
+	@Column(name="region")
+	@Enumerated(value=EnumType.STRING)
+	private Region region;
 	
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER)
 	private List<Order> orders;
 	
 	public Trader() {}
 
-	public Trader(int id, String username, String password, Role role, List<Order> orders) {
+	public Trader(int id, String username, String password, Role role, Region region, List<Order> orders) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.role = role;
+		this.region = region;
 		this.orders = orders;
 	}
 	
@@ -128,6 +134,21 @@ public class Trader {
 		this.role = role;
 	}
 
+	/** 
+	 * @return Region
+	 */
+	public Region getRegion() {
+		return region;
+	}
+
+	
+	/** 
+	 * @param Region
+	 */
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
 	
 	/** 
 	 * @return List<Order>
@@ -150,7 +171,7 @@ public class Trader {
 	 */
 	@Override
 	public String toString() {
-		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + ", orders=" + orders + "]";
+		return "Trader [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + ", region=" + region + ", orders=" + orders + "]";
 	}
 
 	

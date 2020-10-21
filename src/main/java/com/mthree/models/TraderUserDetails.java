@@ -16,6 +16,10 @@ public class TraderUserDetails implements UserDetails {
 		this.user = user;
 	}
 
+	public TraderUserDetails() {
+		
+	}
+
 	
 	/** 
 	 * @return Collection<? extends GrantedAuthority>
@@ -42,6 +46,13 @@ public class TraderUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		return user.getUsername();
+	}
+
+	/** 
+	 * @return Trader
+	 */
+	public Trader getTrader() {
+		return user;
 	}
 
 	

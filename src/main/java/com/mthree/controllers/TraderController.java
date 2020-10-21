@@ -2,20 +2,38 @@ package com.mthree.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.mthree.dtos.OrderBookDTO;
 import com.mthree.dtos.TraderDTO;
+import com.mthree.models.ExchangeMpid;
+import com.mthree.models.Trade;
 import com.mthree.models.Trader;
+import com.mthree.models.TraderUserDetails;
 import com.mthree.services.SecurityService;
 import com.mthree.services.TraderService;
+import com.mthree.utils.StockInfo;
 import com.mthree.utils.TraderValidator;
 
 @Controller
+@SessionAttributes("trader")
 public class TraderController {
 	
 	@Autowired
@@ -28,8 +46,19 @@ public class TraderController {
     private TraderValidator traderValidator;
 
     @Autowired
+    private StockInfo stockInfo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
+    
+    /** 
+     * @return TraderUserDetails
+     */
+    @ModelAttribute("trader")
+	public TraderUserDetails trader() {
+		return new TraderUserDetails();
+	}
     
     /** 
      * User welcome page.
@@ -48,42 +77,42 @@ public class TraderController {
      * @param model
      * @return String
      */
-    @GetMapping("/user/registration")
+    @GetMapping("/user/register")
     public String registration(Model model) {
         
     	model.addAttribute("userForm", new TraderDTO());
 
-        return "/user/add-trader";
+        return "/user/register";
     }
 
     /** 
-     * User registration success/fail.
-     * 
-     * @param userForm
-     * @param bindingResult
-     * @return String
+-     * User registration success/fail.
+-     * 
+      * @param userForm
+      * @param bindingResult
+      * @return String
      */
-    @PostMapping("/user/add-trader")
+    @PostMapping("/user/new")
     public String registerUser(@ModelAttribute("userForm") TraderDTO userForm, BindingResult bindingResult) {
     	Trader trader = convertToEntity(userForm);
 
         traderValidator.validate(trader, bindingResult);
         
         if (bindingResult.hasErrors()) {
-            return "/user/add-trader";
+            return "/user/register";
         } else {
 
             traderService.addTrader(trader);
 
             securityService.autoLogin(trader.getUsername(), trader.getPasswordConfirm());
-
-            return "/user/homepage";
         }
+
+        return "redirect:/user/home";
     }
     
     /** 
-     * User login page.
-     * 
+-    * User login page.
+-    *  
      * @param model
      * @param error
      * @param logout
@@ -103,15 +132,56 @@ public class TraderController {
        return "/user/login";
     }
 
+
     /** 
      * User home page.
      * 
      * @param model
      * @return String
      */
-    @GetMapping("/user/homepage")
-    public String homepage(Model model) {
+    @GetMapping("/user/home")
+    public String home(Model model, @ModelAttribute("trader") TraderUserDetails trader, @ModelAttribute("orderBook") OrderBookDTO orderBook) {
+
+        if (trader.getTrader() == null) {
+            TraderUserDetails traderUd = (TraderUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            model.addAttribute("trader", traderUd);
+            model.addAttribute("orderBook", new OrderBookDTO());
+
+            HashMap<String, Object> stockInfoData = (HashMap<String, Object>) stockInfo.stockInfoLoader(null, traderUd.getTrader());
+
+            @SuppressWarnings("unchecked")
+            Map<Trade, List<ExchangeMpid>> tempTrades = (Map<Trade, List<ExchangeMpid>>) stockInfoData.get("tempTrades");
+
+            model.addAttribute("tempTrades", tempTrades);
+            model.addAttribute("totalOrders", stockInfoData.get("totalOrders"));
+            model.addAttribute("totalVolume", stockInfoData.get("totalVolume"));
+
+            return "/user/home";
+        } 
+
     	 return "/user/home";
+    }
+
+    
+    /** 
+     * @param request
+     * @param response
+     * @param status
+     * @return String
+     */
+    @PostMapping("/user/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response, SessionStatus status) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null) {    
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+
+        status.setComplete();
+        
+        return "/user/logout";
     }
 
     /** 

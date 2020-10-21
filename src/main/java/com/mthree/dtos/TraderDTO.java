@@ -1,18 +1,22 @@
 package com.mthree.dtos;
 
+import com.mthree.models.Region;
+
 public class TraderDTO {
 
     private int id;
     private String username;
     private String password;
+    private Region region;
 	private String passwordConfirm;
 	
 	public TraderDTO() {}
     
-    public TraderDTO(int id, String username, String password, String passwordConfirm) {
+    public TraderDTO(int id, String username, String password, Region region, String passwordConfirm) {
 		this.id = id;
 		this.username = username;
-        this.password = password;
+		this.password = password;
+		this.region = region;
         this.passwordConfirm = passwordConfirm;
 	}
 	
@@ -64,6 +68,20 @@ public class TraderDTO {
 		this.password = password;
 	}
 	
+	/** 
+	 * @return Region
+	 */
+	public Region getRegion() {
+		return region;
+	}
+
+	
+	/** 
+	 * @param Region
+	 */
+	public void setRegion(Region region) {
+		this.region = region;
+	}
 	
 	/** 
 	 * @return String
@@ -85,6 +103,6 @@ public class TraderDTO {
 	 */
 	@Override
 	public String toString() {
-		return "Trader [id=" + id + ", username=" + username + ", password=" + password + "]";
+		return "Trader [id=" + id + ", username=" + username + ", password=" + region + ", region=" +"]";
 	}
 }

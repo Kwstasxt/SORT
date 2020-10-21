@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"
-			xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-			xmlns:th="http://www.thymeleaf.org"
-			layout:decorate="~{fragments/layout}">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{fragments/layout}">
+
 <head>
 	<title>Sort Project</title>
 	<meta charset="UTF-8">
@@ -12,7 +11,8 @@
 	<link th:href="@{/assets/img/favicon.png}" rel="icon">
 
 	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Poppins:300,400,500,700"
+		rel="stylesheet">
 
 	<!-- Vendor CSS Files -->
 	<link th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css">
@@ -22,31 +22,38 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/assets/register-login/css/main.css}">
 
 </head>
+
 <body style="background-color: #f0edf0;">
 
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
-				<form th:action="@{/user/add-trader}" th:object="${userForm}" method="post" class="login100-form validate-form">
+				<form th:action="@{/user/new}" th:object="${userForm}" method="post" class="login100-form validate-form">
 
 					<span class="login100-form-title p-b-43">
 						Trader Registration
 					</span>
 
-					<!-- show notification on error -->
-					<div class="error" th:if="${param.error}">Invalid username or password.</div>
-
-					<!-- show notification of logout -->
-					<div class="error" th:if="${param.logout}">You have been logged out.</div>
-
-					<div class="wrap-input100 validate-input">
+					<div class="wrap-input100">
 						<input class="input100" type="text" th:field="*{username}">
 						<span class="label-input100">Username</span>
 					</div>
 
 					<p class="error" th:each="error: ${#fields.errors('username')}" th:text="${error}">Validation error</p>
 
-					<div class="wrap-input100 validate-input">
+					<div class="wrap-input100">
+						<span class="label-input100">Region</span>
+						<select class="select-css" th:field="*{region}">
+							<option th:each="region : ${T(com.mthree.models.Region).values()}"
+									th:value="${region}"
+									th:text="${region}">
+							</option>
+						</select>
+					</div>
+
+					<p class="error" th:each="error: ${#fields.errors('region')}" th:text="${error}">Validation error</p>
+
+					<div class="wrap-input100">
 						<input class="input100" type="password" th:field="*{password}">
 						<span class="label-input100">Password</span>
 					</div>
@@ -54,7 +61,7 @@
 					<p class="error" th:each="error : ${#fields.errors('password')}"
 							th:text="${error}">Validation error</p>
 
-					<div class="wrap-input100 validate-input">
+					<div class="wrap-input100">
 						<input class="input100" type="password" th:field="*{passwordConfirm}">
 						<span class="label-input100">Confirm Password</span>
 					</div>

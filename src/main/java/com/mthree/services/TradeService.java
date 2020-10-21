@@ -33,4 +33,13 @@ public class TradeService implements TradeDAO {
         return tradeRepository.findAll();
     }
 
+
+
+
+
+    public void saveTradeIntoDB(Trade t){
+        tradeRepository.save(t);
+    }
+
+
 }

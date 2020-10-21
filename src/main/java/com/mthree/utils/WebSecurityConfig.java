@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.mthree.services.TraderDetailsService;
  
@@ -57,7 +58,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
  
-    
+//    @Bean
+//    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+//        return new MySimpleUrlAuthenticationSuccessHandler();
+//    }
     /** 
      * @param auth
      * @throws Exception
@@ -81,10 +85,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
             //.loginProcessingUrl("/perform_login")
             .loginPage("/user/login")
-            .defaultSuccessUrl("/user/homepage") // home screen url
+            .defaultSuccessUrl("/user/home") // home screen url
             .permitAll()
             .and()
-            .logout().permitAll();
+            .logout()
+            .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+            .logoutSuccessUrl("/user/index")
+            .permitAll();
     }
     
     

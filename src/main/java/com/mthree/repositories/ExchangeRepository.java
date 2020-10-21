@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.mthree.models.Exchange;
 
 @Repository
-public interface ExchangeRepository extends JpaRepository<Exchange, Integer> {
+public interface ExchangeRepository extends JpaRepository<Exchange, String> {
 
 }

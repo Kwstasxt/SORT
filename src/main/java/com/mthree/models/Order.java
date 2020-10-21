@@ -121,7 +121,7 @@ public class Order {
 		return type;
 	}
 
-	
+
 	/** 
 	 * @param type
 	 */
@@ -136,7 +136,6 @@ public class Order {
 		return submitTime;
 	}
 
-	
 	/** 
 	 * @param submitTime
 	 */
@@ -144,12 +143,61 @@ public class Order {
 		this.submitTime = submitTime;
 	}
 
-	
+
 	/** 
 	 * @return String
 	 */
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", ric=" + ric + ", price=" + price + ", quantity=" + quantity + ", type=" + type + ", submitTime=" + submitTime +"]";
+		return "Order [id=" + id + ", ric=" + ric + ", price=" + price + ", quantity=" + quantity + ", type=" + type + ", submitTime=" + submitTime + "]";
 	}
+
+	
+	/** 
+	 * @return int
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((price == null) ? 0 : price.hashCode());
+		result = prime * result + quantity;
+		result = prime * result + ((ric == null) ? 0 : ric.hashCode());
+		result = prime * result + ((submitTime == null) ? 0 : submitTime.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	
+	/** 
+	 * @param obj
+	 * @return boolean
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Order other = (Order) obj;
+		if (price == null) {
+			if (other.price != null)
+				return false;
+		} else if (!price.equals(other.price))
+			return false;
+		if (quantity != other.quantity)
+			return false;
+		if (ric != other.ric)
+			return false;
+		if (submitTime == null) {
+			if (other.submitTime != null)
+				return false;
+		} else if (!submitTime.equals(other.submitTime))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}	
 }

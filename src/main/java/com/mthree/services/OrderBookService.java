@@ -1,6 +1,8 @@
 package com.mthree.services;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +16,9 @@ import com.mthree.models.Order;
 import com.mthree.models.OrderBook;
 import com.mthree.models.OrderType;
 import com.mthree.models.Ric;
+import com.mthree.models.Sort;
 import com.mthree.repositories.OrderBookRepository;
+import com.mthree.repositories.OrderRepository;
 
 @Service
 public class OrderBookService implements OrderBookDAO {
@@ -23,7 +27,13 @@ public class OrderBookService implements OrderBookDAO {
 	private OrderBookRepository orderBookRepository;
 
 	@Autowired
+	private OrderRepository orderRepository;
+
+	@Autowired
 	private OrderService orderService;
+
+	@Autowired
+	private SortService sortService;
 
 	private Random random = new Random();
 
@@ -58,6 +68,7 @@ public class OrderBookService implements OrderBookDAO {
 	
 	
 	/** 
+	 * Return list of orderBooks from the DB.
 	 * @return List<OrderBook>
 	 */
 	@Override
@@ -82,6 +93,84 @@ public class OrderBookService implements OrderBookDAO {
 	}
 
 
+	/** 
+	 * Return a list of orderbooks for a given ric found using the relevant smart order router.
+	 * 
+	 * @param ric
+	 * @return List<OrderBook>
+	 */
+	@Override
+	public List<OrderBook> getOrderbooksForRic(Sort sort, Ric ric) {
+
+		// generate combined order book 
+		List<OrderBook> combinedOrderBook = sortService.combineOrderBooks(sort);
+
+		List<OrderBook> orderBooksForRic = new ArrayList<>();
+
+		// find orderbooks for given ric 
+		for (OrderBook combinedOrders : combinedOrderBook) {
+
+			String givenRic = ric.getNotation();
+			String currentOrderBookRic = combinedOrders.getRic().getNotation();
+
+			if (currentOrderBookRic.equals(givenRic)) {
+				orderBooksForRic.add(combinedOrders);
+			}
+		}
+
+		return orderBooksForRic;
+	}
+
+	
+	/** 
+	 * Returns all of the orders in a given list of order books that have the order type buy.
+	 * 
+	 * @param orderBooks
+	 * @return List<Order>
+	 */
+	@Override
+	public List<Order> getBuyOrders(List<OrderBook> orderBooks) {
+
+		List<Order> buyOrdersForRic = new ArrayList<>();
+
+		for (OrderBook orderBookForRic : orderBooks) {
+			for (Order ricOrder : orderBookForRic.getOrders()) {
+				if (ricOrder.getType().equals(OrderType.BUY)) {
+					buyOrdersForRic.add(ricOrder);
+				} 
+			}
+		}
+
+		// TODO: orders must be sorted based on highest price
+
+		return buyOrdersForRic;
+	}
+
+	
+	/** 
+	 * Returns all of the orders in a given list of order books that have the order type sell. 
+	 * 
+	 * @param orderBooks
+	 * @return List<Order>
+	 */
+	@Override
+	public List<Order> getSellOrders(List<OrderBook> orderBooks) {
+
+		List<Order> sellOrdersForRic = new ArrayList<>();
+
+		for (OrderBook orderBookForRic : orderBooks) {
+			for (Order ricOrder : orderBookForRic.getOrders()) {
+				if (ricOrder.getType().equals(OrderType.SELL)) {
+					sellOrdersForRic.add(ricOrder);
+				} 
+			}
+		}
+
+		// TODO: orders must be sorted based on lowest price
+		return sellOrdersForRic;
+	} 
+
+
 	/**
 	 * Generates random orders using predetermined instrument types.
 	 * 
@@ -90,49 +179,47 @@ public class OrderBookService implements OrderBookDAO {
 	@Override
 	public List<OrderBook> generateRandomOrders() {
 
+		OrderType[] orderTypes = OrderType.values();
 		Ric[] ricTypes = Ric.values();
 		BigDecimal price;
 		int quantity;
 
 		ArrayList<OrderBook> orderBookList = new ArrayList<>();
 
-		// create 100 buy/sell orders for each Instrument type.
+		// create 100 orders for each Instrument type.
 		for (int i = 0; i < ricTypes.length; i++) {
 
 			ArrayList<Order> orders = new ArrayList<>();
 
-			for (int j = 0; j < 100; j++) {
+			for (int j = 0; j < 5; j++) {
 
-				//buy orders
-				quantity = random.nextInt() * 3000;
-				price = generatePrice(OrderType.BUY);
+				OrderType type = orderTypes[random.nextInt(orderTypes.length)];
 
-				Order buyOrder = new Order();
-				buyOrder.setRic(ricTypes[i]);
-				buyOrder.setPrice(price);
-				buyOrder.setQuantity(quantity);
-				buyOrder.setType(OrderType.BUY);
-				orders.add(buyOrder);
+				quantity = random.nextInt(3000);
+				price = generatePrice(type);
 
-				// sell orders
-				quantity = random.nextInt() * 3000;
-				price = generatePrice(OrderType.SELL);
+				Order order = new Order();
+				order.setRic(ricTypes[i]);
+				order.setPrice(price);
+				order.setQuantity(quantity);
+				order.setType(type);
+				order.setSubmitTime(LocalDateTime.now());
+				orders.add(order);
 
-				Order sellOrder = new Order();
-				sellOrder.setRic(ricTypes[i]);
-				sellOrder.setPrice(price);
-				sellOrder.setQuantity(quantity);
-				sellOrder.setType(OrderType.SELL);
-				orders.add(sellOrder);
+				// add to the database.
+				orderRepository.save(order);
 			}
 
 			OrderBook orderBook = new OrderBook();
 			orderBook.setRic(ricTypes[i]);
 			orderBook.setOrders(orders);
+			orderBookRepository.save(orderBook);
+
 			orderBookList.add(orderBook);
 		}
 		return orderBookList;
 	}
+
 
 	
 	/** 
@@ -151,11 +238,11 @@ public class OrderBookService implements OrderBookDAO {
 			modifier = (Math.random() / 5) + 0.85; // 85% - 105% modifier
 		}
 
-		return BigDecimal.valueOf(base * modifier);
+		BigDecimal price = BigDecimal.valueOf(base * modifier);
+
+		return price.setScale(2, RoundingMode.CEILING);
 	}
 
-
-	
 	/** 
 	 * Calculate total number of orders for a given list of orderbooks.
 	 * 
@@ -194,4 +281,5 @@ public class OrderBookService implements OrderBookDAO {
 
 		return volume;
 	}
+
 }

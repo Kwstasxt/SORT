@@ -1,7 +1,7 @@
 package com.mthree.models;
 
 public enum Region {
-	EUROPE,
-	NORTH_AMERICA,
-	ASIA,
+	EMEA, // Europe, Middle East and Africa
+	APAC, // Asia Pacific & Japan
+	AMER, // Canada, USA, Mexico   
 }

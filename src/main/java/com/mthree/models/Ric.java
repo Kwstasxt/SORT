@@ -1,10 +1,22 @@
 package com.mthree.models;
 
 public enum Ric {
-    VOD_LONDON("VOD.L"),
-    BT_LONDON("BT.L");
+    BARCLAYS("BARC"),
+    BHP("BHP"),
+    BP("BP."),
+    BT("BT"),
+    COCA_COLA("CCH"),
+    EXPERIAN("EXPN"),
+    GSK("GSK"),
+    HSBC("HSBA"),
+    NATWEST_GROUP("NWG"),
+    ROLLS_ROYCE("RR."),
+    SAINSBURYS("SBRY"),
+    TESCO("TSCO"),
+    UNILEVER("ULVR"),
+    VODAFONE("VOD");
 
-    String notation;
+   private String notation;
 
     Ric(String notation) {
         this.notation = notation;

@@ -119,7 +119,7 @@ public class TraderControllerTest {
     @Test
     public void testConvertToEntity() {
         
-        TraderDTO traderDTO = new TraderDTO(3, "test", "test", "test");
+        TraderDTO traderDTO = new TraderDTO();
 
         Trader trader = modelMapper.map(traderDTO, Trader.class);
         

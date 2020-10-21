@@ -15,7 +15,7 @@ public class Future extends Order {
 	
 	public Future() {}
 
-	public Future(int id, Ric ric, BigDecimal price, int quantity, OrderType type, LocalDateTime submitTime, LocalDateTime expiryDateTime) {
+	public Future(int id, Ric ric, BigDecimal price, int quantity, OrderType type, LocalDateTime expiryDateTime, LocalDateTime submitTime, ExchangeMpid exchangeMpid) {
 		super(id, ric, price, quantity, type, submitTime);
 		this.expiryDateTime = expiryDateTime;
 	}
@@ -47,6 +47,7 @@ public class Future extends Order {
 				", price=" + super.getPrice() + 
 				", quantity=" + super.getQuantity() + 
 				", type=" + super.getType() + 
-				", expiryDateTime=" + expiryDateTime + "]";
+				", expiryDateTime=" + expiryDateTime +
+				", submitTime=" + super.getSubmitTime() + "]";
 	}
 }

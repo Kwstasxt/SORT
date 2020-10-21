@@ -103,4 +103,35 @@ public class OrderService implements OrderDAO {
 
 		return slicedOrder;
 	}
+
+
+
+	/** 
+	 * Returns all orders from the DB. 
+	 * @return List<Order>
+	 */
+	public List<Order> findAllOrders(){
+		return orderRepository.findAll();
+	}
+
+
+	/** 
+	 * Delete order with this ID. 
+	 * @return int (Number of rows affected)
+	 */
+	public void deleteOrderByID(int id){
+		orderRepository.deleteById(id);
+	}
+
+
+	/** 
+	 * Update order quantity with this ID. 
+	 * @return int (Number of rows affected)
+	 */
+	public int updateOrderQuantityByID(int id, int value){
+		return orderRepository.updateOrderQuantityByID(id, value);
+	}
+
+
+
 }
