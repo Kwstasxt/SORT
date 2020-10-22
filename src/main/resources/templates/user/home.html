@@ -25,7 +25,6 @@
 			<img class="page-header-item" th:src="@{/assets/img/mthree_logo.png}" alt="">
 
 			<div class="page-header-2">
-				<!-- <a id="previousTradesButton" href="/user/previousTrades" title="previousTrades" class="btn-prev-trade">Previous Trades</a> -->
 
 				<a id="logoutButton" href="/user/logout" title="logout" class="btn-logout">Logout</a>
 			</div>
@@ -72,6 +71,63 @@
 			</div>
 
 			<div class="table-container">
+
+				<div class="add-order-container">
+					<div class="add-order-sub-container">
+						<form th:action="@{/order/new}" th:object="${order}" method="post" class="login100-form">
+							<h5 class="stock-activity">
+								<span class="add-order">Add Order </span>
+							</h5>
+							<h6 class="stock-activity-info">
+								<span class="ric">Ric:</span>
+								<span class="current-ric" th:text="${orderBook.getRic().getNotation()}"></span>
+							</h6>
+							<div class="wrap-input100 validate-input">
+								<input class="input100" type="number" min="0.01" step="0.01" value="0.01" pattern="(d{4})([.])(d{2})" name="price" th:field="*{price}" th:required="required">
+								<span class="label-input100">Price</span>
+							</div>
+							<p class="error" th:each="error: ${#fields.errors('price')}" th:text="${error}">
+								Please Input a Numerical Value
+							</p>
+							<div class="wrap-input100 validate-input">
+								<input class="input100" type="number" min="1" value="1" name="quantity" th:field="*{quantity}" th:required="required">
+								<span class="label-input100">Quantity</span>
+							</div>
+							<p class="error" th:each="error: ${#fields.errors('quantity')}" th:text="${error}">
+								Please Input a Numerical Value
+							</p>
+
+							 <div class="stock-activity-info">
+								<h6 class="stock-activity-info">
+									<span class="type">Type: </span>
+								</h6>
+								<select th:field="*{type}" class="select-css">
+									<option th:each="type : ${T(com.mthree.models.OrderType).values()}"
+										th:value="${type}"
+										th:text="${type}">
+									</option>
+								</select>
+							</div>
+
+							<div class="stock-activity-info">
+								<h6 class="stock-activity-info">
+									<span class="type">Exchange: </span>
+								</h6>
+								<select th:field="*{mpid}" class="select-css">
+									<option th:each="exchangeMpid : ${sortExchanges}"
+										th:value="${exchangeMpid}"
+										th:text="${exchangeMpid.getNotation()}">
+									</option>
+								</select>
+							</div>
+							<div class="order-buttons-container">
+								<input class="btn-add-order" type="submit" value="Add Order" />
+							</div>
+						</form>
+					</div>
+				</div>
+
+
 				<div class="wrap-table100">
 					<table class="table">
 					  <thead>

@@ -1,14 +1,22 @@
 package com.mthree.services;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import com.mthree.daos.OrderDAO;
+import com.mthree.models.Exchange;
+import com.mthree.models.ExchangeMpid;
 import com.mthree.models.Order;
+import com.mthree.models.OrderBook;
 import com.mthree.models.OrderType;
 import com.mthree.models.Ric;
+import com.mthree.models.Sort;
+import com.mthree.models.Trader;
 import com.mthree.repositories.OrderRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,24 +27,17 @@ public class OrderService implements OrderDAO {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
-	/** 
-	 * Using a given type we can calculate different prices for an instrument.
-	 * 
-	 * @param type
-	 * @return BigDecimal
-	 */
-	public BigDecimal generatePrice(int type) {
 
-		String[] multiplierByEachRic = { "200", "500" };
+	@Autowired
+	private SortService sortService;
 
-		String range = multiplierByEachRic[type];
+	@Autowired
+	private OrderBookService orderBookService;
 
-		BigDecimal max = new BigDecimal(range + ".0");
-		BigDecimal randFromDouble = BigDecimal.valueOf(Math.random());
+	@Autowired
+	private ExchangeService exchangeService;
 
-		return randFromDouble.multiply(max);
-	}
+	private Random random = new Random();
 
 	/**
 	 * @param orderId
@@ -110,7 +111,7 @@ public class OrderService implements OrderDAO {
 	 * Returns all orders from the DB. 
 	 * @return List<Order>
 	 */
-	public List<Order> findAllOrders(){
+	public List<Order> findAllOrders() {
 		return orderRepository.findAll();
 	}
 
@@ -119,8 +120,17 @@ public class OrderService implements OrderDAO {
 	 * Delete order with this ID. 
 	 * @return int (Number of rows affected)
 	 */
-	public void deleteOrderByID(int id){
+	public void deleteOrderByID(int id) {
 		orderRepository.deleteById(id);
+	}
+
+
+	/** 
+	 * @param order
+	 * @return Order
+	 */
+	public Order addOrder(Order order) {
+		return orderRepository.save(order);
 	}
 
 
@@ -128,10 +138,94 @@ public class OrderService implements OrderDAO {
 	 * Update order quantity with this ID. 
 	 * @return int (Number of rows affected)
 	 */
-	public int updateOrderQuantityByID(int id, int value){
+	public int updateOrderQuantityByID(int id, int value) {
 		return orderRepository.updateOrderQuantityByID(id, value);
 	}
 
+	// TODO: refactor
+	/** 
+	 * @return List<Order>
+	 */
+	public List<Order> generateRandomOrdersForTrader(Trader trader) {
+		
+		List<Order> orders = new ArrayList<>();
 
+		OrderType[] orderTypes = OrderType.values();
+		BigDecimal price;
+		int quantity;
+
+		// exchange to store trader's orders (chosen randomly from exchanges that are part of their sort instance)
+		Sort sort = sortService.findSortForTrader(trader);
+		List<ExchangeMpid> mpids = new ArrayList<>();
+
+		sort.getExchanges().stream().forEach(sortExchange -> {
+			mpids.add(sortExchange.getMpid());
+		});
+
+		int mpidIndex = random.nextInt(mpids.size());
+		Exchange exchange = exchangeService.findExchange(mpids.get(mpidIndex));
+
+		List<OrderBook> exchangeOrderBooks = exchange.getOrderBooks();
+
+		for (Ric ric : Ric.values()) {
+
+			List<Order> exchangeOrders = new ArrayList<>();
+
+			for (int j = 0; j < 5; j++) {
+
+				OrderType type = orderTypes[random.nextInt(orderTypes.length)];
+	
+				quantity = random.nextInt(3000);
+				price = generatePrice(type);
+	
+				Order order = new Order();
+				order.setRic(ric);
+				order.setPrice(price);
+				order.setQuantity(quantity);
+				order.setType(type);
+				order.setSubmitTime(LocalDateTime.now());
+				orders.add(order);
+				exchangeOrders.add(order); // separate order book for exchange so don't have to clear after each round
+	
+				// add to the database
+				orderRepository.save(order);
+			}
+
+			OrderBook orderBook = new OrderBook();
+			orderBook.setRic(ric);
+			orderBook.setOrders(exchangeOrders);
+			// add to the database
+			orderBookService.saveOrderBook(orderBook);
+			exchangeOrderBooks.add(orderBook);
+		}
+
+		exchange.setOrderBooks(exchangeOrderBooks);
+		// add to the database
+		exchangeService.saveExchange(exchange);
+
+		return orders;			
+	}
+
+	
+	/** 
+	 * Using a given type we can calculate different prices for an instrument,
+	 * ensuring price overlap bewtween buy and sell based on a base price of 500.
+	 * 
+	 * @param orderType
+	 * @return BigDecimal
+	 */
+	public BigDecimal generatePrice(OrderType orderType) {
+
+		int base = 500;
+		double modifier = (Math.random() / 5) + 0.95; // 95% - 115% modifier
+
+		if (orderType == OrderType.BUY) {
+			modifier = (Math.random() / 5) + 0.85; // 85% - 105% modifier
+		}
+
+		BigDecimal price = BigDecimal.valueOf(base * modifier);
+
+		return price.setScale(2, RoundingMode.CEILING);
+	}
 
 }

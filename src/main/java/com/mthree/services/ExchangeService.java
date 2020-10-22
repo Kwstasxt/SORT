@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.mthree.daos.ExchangeDAO;
 import com.mthree.models.Exchange;
@@ -33,7 +34,6 @@ public class ExchangeService implements ExchangeDAO {
 
 	private Random random = new Random();
 
-	//TODO: Why Fee must be fixed for every exchange?
 	public static final BigDecimal BULK_FEE = BigDecimal.valueOf(150.20);
 	public static final BigDecimal NORMAL_FEE = BigDecimal.valueOf(330.52);
 
@@ -102,23 +102,24 @@ public class ExchangeService implements ExchangeDAO {
 	@Override
 	public ExchangeMpid findMpidForOrder(Order order) {
 
-		ExchangeMpid mpid = null;
+		AtomicReference<ExchangeMpid> mpid = new AtomicReference<>();
 
 		List<Exchange> exchanges = exchangeRepository.findAll();
 
-		for (Exchange exchange : exchanges) {
-			for (OrderBook orderBook : exchange.getOrderBooks()) {
-				for (Order exchangeOrder : orderBook.getOrders()) {
+		exchanges.stream().forEach(exchange -> 
+			exchange.getOrderBooks().stream().forEach(orderBook -> 
+				orderBook.getOrders().stream().forEach(exchangeOrder -> {
 					if (order.equals(exchangeOrder)) {
-						mpid = exchange.getMpid();
+						mpid.set(exchange.getMpid());
 					}
-				}
-			}
-		}
+				})
+			)
+		);
 
-		return mpid;
+		return mpid.get();
 	}
 	
+	// TODO: refactor
 	/** 
 	 * @param orders
 	 * @param tradersOrder
@@ -256,6 +257,7 @@ public class ExchangeService implements ExchangeDAO {
 	}
 
 
+	// TODO: refactor
 	/** 
 	 * Creates exchanges using orderBookService.generateRandomOrders() method for Sort.
 	 * 
@@ -347,8 +349,15 @@ public class ExchangeService implements ExchangeDAO {
 
 
 
+	/** 
+	 * @return List<Exchange>
+	 */
 	public List<Exchange> findExchanges(){
 		return exchangeRepository.findAll();
 	}
 
+
+	public void saveExchange(Exchange exchange) {
+		exchangeRepository.save(exchange);
+	}
 }

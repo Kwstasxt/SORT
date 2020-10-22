@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.mthree.dtos.OrderBookDTO;
+import com.mthree.dtos.OrderDTO;
 import com.mthree.models.ExchangeMpid;
 import com.mthree.models.OrderBook;
-import com.mthree.models.Ric;
 import com.mthree.models.Trade;
 import com.mthree.models.TraderUserDetails;
 import com.mthree.services.OrderBookService;
@@ -27,7 +28,7 @@ import com.mthree.services.SortService;
 import com.mthree.utils.StockInfo;
 
 @Controller
-@SessionAttributes({ "trader", "tempTrades", "selectedRic", "executedTrades" })
+@SessionAttributes({ "trader", "tempTrades", "orderBook", "executedTrades", "sortExchanges" })
 public class OrderBookController {
 
     @Autowired
@@ -42,44 +43,64 @@ public class OrderBookController {
     @Autowired
     private StockInfo stockInfo;
 
+    
+    /** 
+     * @return TraderUserDetails
+     */
     @ModelAttribute("trader")
     public TraderUserDetails trader() {
         return new TraderUserDetails();
     }
 
+    
+    /** 
+     * @return Map<Trade, List<ExchangeMpid>>
+     */
     @ModelAttribute("tempTrades")
     public Map<Trade, List<ExchangeMpid>> trades() {
-        return new HashMap<Trade, List<ExchangeMpid>>();
+        return new HashMap<>();
     }
 
-    @ModelAttribute("selectedRic")
-    public Ric selectedRic() {
-        return Ric.values()[0];
+    
+    /** 
+     * @return OrderBookDTO
+     */
+    @ModelAttribute("orderBook")
+    public OrderBookDTO orderBook() {
+        return new OrderBookDTO();
     }
 
+    
+    /** 
+     * @return List<ExchangeMpid>
+     */
+    @ModelAttribute("sortExchanges")
+    public List<ExchangeMpid> sortExchanges() {
+        return new ArrayList<>();
+    }
+
+    
+    /** 
+     * @return Map<Trade, List<ExchangeMpid>>
+     */
     @ModelAttribute("executedTrades")
     public Map<Trade, List<ExchangeMpid>> executedTrades() {
-        return new HashMap<Trade, List<ExchangeMpid>>();
+        return new HashMap<>();
     }
 
-    @GetMapping("/order/new")
-    public void addOrder(@RequestParam("orderBookId") int orderBookId, @RequestParam("orderId") int orderId) {
-        orderBookService.addOrder(orderBookId, orderId);
-    }
-
-    @GetMapping("/order/cancel")
-    public void cancelOrder(@RequestParam("orderBookId") int orderBookId, @RequestParam("orderId") int orderId) {
-        orderBookService.cancelOrder(orderBookId, orderId);
-    }
-
+    
+    /** 
+     * @param "orderBook"
+     * @return String
+     */
     @PostMapping("/user/executeTrade")
     public String executeTrade(@ModelAttribute("executedTrades") Map<Trade, List<ExchangeMpid>> executedTrades,
-            Model model, @ModelAttribute("selectedRic") Ric selectedRic,
+            Model model, @ModelAttribute("orderBook") OrderBookDTO orderBookDto,
             @RequestParam(value = "executeTradeButton") int tradeId,
             @ModelAttribute("tempTrades") Map<Trade, List<ExchangeMpid>> tempTrades, SessionStatus status) {
         Trade chosenTrade = new Trade();
         for (Trade trade : tempTrades.keySet()) {
-            if (trade.getBuyOrder().getRic().equals(selectedRic) && trade.getId() == tradeId) {
+            if (trade.getBuyOrder().getRic().equals(orderBookDto.getRic()) && trade.getId() == tradeId) {
                 chosenTrade = trade;
                 break;
             }
@@ -92,7 +113,6 @@ public class OrderBookController {
                 status.setComplete(); //refreshes the session so previous trade data is disregarded
                 return "redirect:/user/executeTradeSuccess";
             } else { //if trade non executable
-                System.out.println("trade cannot be executed");
                 status.setComplete(); //refreshes the session so previous trade data is disregarded
                 return "redirect:/user/errorTrade";
             } 
@@ -100,25 +120,47 @@ public class OrderBookController {
         return "/user/home";
     }
 
+    
+    /** 
+     * @return String
+     */
     @GetMapping("/user/executeTradeSuccess")
     public String tradeSuccess() {
         return "/user/executeTradeSuccess";
     }
 
+    
+    /** 
+     * @return String
+     */
     @GetMapping("/user/errorTrade")
     public String tradeError() {
         return "/user/errorTrade";
     }
 
+    
+    /** 
+     * @param trader
+     * @return String
+     */
     @GetMapping("/user/personalBook")
-    public String populateBook(@ModelAttribute("executedTrades") Map<Trade, List<ExchangeMpid>> executedTrades,
-            Model model, @ModelAttribute TraderUserDetails trader) {
+    public String populateBook(@ModelAttribute("executedTrades") Map<Trade, List<ExchangeMpid>> executedTrades, Model model, @ModelAttribute("trader") TraderUserDetails trader) {
 
         return "/user/personalBook";
     }
 
+    
+    /** 
+     * @param orderBook
+     * @param order
+     * @param bindingResult
+     * @param model
+     * @param trader
+     * @param sortExchanges
+     * @return String
+     */
     @PostMapping("/user/stock-info")
-    public String populateTable(@ModelAttribute("orderBook") OrderBookDTO orderBook, BindingResult bindingResult, Model model, @ModelAttribute("trader") TraderUserDetails trader) {
+    public String populateTable(@ModelAttribute("orderBook") OrderBookDTO orderBook, @ModelAttribute("order") OrderDTO order, BindingResult bindingResult, Model model, @ModelAttribute("trader") TraderUserDetails trader, @ModelAttribute("sortExchanges") List<ExchangeMpid> sortExchanges) {
 
         HashMap<String, Object> stockInfoData = (HashMap<String, Object>) stockInfo.stockInfoLoader(orderBook, trader.getTrader());
 

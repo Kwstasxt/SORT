@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,19 +23,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mthree.dtos.OrderBookDTO;
+import com.mthree.dtos.OrderDTO;
 import com.mthree.dtos.TraderDTO;
+import com.mthree.models.Exchange;
 import com.mthree.models.ExchangeMpid;
+import com.mthree.models.Order;
 import com.mthree.models.Ric;
 import com.mthree.models.Trade;
 import com.mthree.models.Trader;
 import com.mthree.models.TraderUserDetails;
+import com.mthree.services.OrderService;
 import com.mthree.services.SecurityService;
+import com.mthree.services.SortService;
 import com.mthree.services.TraderService;
 import com.mthree.utils.StockInfo;
 import com.mthree.utils.TraderValidator;
 
 @Controller
-@SessionAttributes({ "trader", "tempTrades", "selectedRic" })
+@SessionAttributes({ "trader", "tempTrades", "orderBook", "sortExchanges" })
 public class TraderController {
 	
 	@Autowired
@@ -42,6 +48,12 @@ public class TraderController {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private SortService sortService;
 
     @Autowired
     private TraderValidator traderValidator;
@@ -63,12 +75,17 @@ public class TraderController {
     
     @ModelAttribute("tempTrades")
     public Map<Trade, List<ExchangeMpid>> trades() {
-        return new HashMap<Trade, List<ExchangeMpid>>();
+        return new HashMap<>();
     }
 
-    @ModelAttribute("selectedRic")
-    public Ric selectedRic() {
-        return Ric.values()[0];
+    @ModelAttribute("orderBook")
+    public OrderBookDTO orderBook() {
+        return new OrderBookDTO();
+    }
+
+    @ModelAttribute("sortExchanges")
+    public List<ExchangeMpid> sortExchanges() {
+        return new ArrayList<>();
     }
     
     /** 
@@ -122,8 +139,8 @@ public class TraderController {
     }
     
     /** 
--    * User login page.
--    *  
+     * User login page.
+     *  
      * @param model
      * @param error
      * @param logout
@@ -151,24 +168,34 @@ public class TraderController {
      * @return String
      */
     @GetMapping("/user/home")
-    public String home(Model model, @ModelAttribute TraderUserDetails trader, @ModelAttribute("orderBook") OrderBookDTO orderBook,
-            @ModelAttribute("tempTrades") Map<Trade, List<ExchangeMpid>> tempTrades, @ModelAttribute("selectedRic") Ric selectedRic) {
+    public String home(Model model, @ModelAttribute("trader") TraderUserDetails trader, @ModelAttribute("orderBook") OrderBookDTO orderBook, @ModelAttribute("order") OrderDTO order, @ModelAttribute("tempTrades") Map<Trade, List<ExchangeMpid>> tempTrades, @ModelAttribute("orderBook") OrderBookDTO orderBookDto, @ModelAttribute("sortExchanges") List<ExchangeMpid> sortExchanges) {
 
         if (trader.getTrader() == null) {
+
             TraderUserDetails traderUd = (TraderUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             model.addAttribute("trader", traderUd);
-            model.addAttribute("orderBook", new OrderBookDTO());
+            OrderBookDTO newOrderBookDto = new OrderBookDTO();
+            newOrderBookDto.setRic(Ric.values()[0]);
+            model.addAttribute("orderBook", newOrderBookDto);
+            model.addAttribute("order", new OrderDTO());
 
             HashMap<String, Object> stockInfoData = (HashMap<String, Object>) stockInfo.stockInfoLoader(null, traderUd.getTrader());
 
             @SuppressWarnings("unchecked")
             Map<Trade, List<ExchangeMpid>> tempTradesLocal = (Map<Trade, List<ExchangeMpid>>) stockInfoData.get("tempTrades");
 
-            model.addAttribute("selectedRic", Ric.values()[0]);
+            List<Exchange> exchanges = sortService.findSortForTrader(traderUd.getTrader()).getExchanges();
+            List<ExchangeMpid> exchangeMpids = new ArrayList<>();
+
+            for (Exchange exchange : exchanges) {
+                exchangeMpids.add(exchange.getMpid());
+            }
+
             model.addAttribute("tempTrades", tempTradesLocal);
             model.addAttribute("totalOrders", stockInfoData.get("totalOrders"));
             model.addAttribute("totalVolume", stockInfoData.get("totalVolume"));
+            model.addAttribute("sortExchanges", exchangeMpids);
 
             return "/user/home";
         } 
@@ -210,6 +237,8 @@ public class TraderController {
         traderDto.setUsername(trader.getUsername());
         traderDto.setPassword(trader.getPassword());
         traderDto.setPasswordConfirm(trader.getPasswordConfirm());
+        traderDto.setRegion(trader.getRegion());
+        traderDto.setOrders(trader.getOrders());
 
         return traderDto;
     }
@@ -227,12 +256,14 @@ public class TraderController {
         trader.setUsername(traderDto.getUsername());
         trader.setPassword(traderDto.getPassword());
         trader.setPasswordConfirm(traderDto.getPasswordConfirm());
+        trader.setRegion(traderDto.getRegion());
+        List<Order> traderOrders = orderService.generateRandomOrdersForTrader(trader);
+        trader.setOrders(traderOrders);
      
         if (traderDto.getId() != 0) {
 
             Trader oldTrader = traderService.findByTraderId(traderDto.getId());
             trader.setRole(oldTrader.getRole());
-            trader.setOrders(oldTrader.getOrders());
         }
 
         return trader;

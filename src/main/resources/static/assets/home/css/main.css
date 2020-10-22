@@ -94,9 +94,9 @@ iframe {
   background: #f0edf0;
 }
 
-  .page-header-2 a {
-    margin: 0 1em;
-  }
+.page-header-2 a {
+  margin: 0 1em;
+}
 
 .page-sub-header {
   width: 100%;
@@ -213,6 +213,121 @@ iframe {
 	font-weight:normal;
 }
 
+.order-buttons-container {
+  width: 100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order-buttons-container form {
+  display: contents;
+}
+
+.btn-add-order {
+  font-family: "Poppins", sans-serif;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 1px;
+  padding: 8px 28px;
+  border-radius: 50px;
+  transition: 0.5s;
+  margin: 10px;
+  border: 2px solid #32b5c9;
+  background-color: #f0edf0;
+  color: #9b03a3;
+}
+
+
+.btn-add-order:hover {
+  background: #32b5c9;
+  border: 2px solid #32b5c9;
+  color: #ffffff;
+}
+
+
+.add-order-sub-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border: 2px solid #32b5c9;
+  border-radius: 20px;
+  padding: 13px; 
+}
+
+.add-order-container {
+  width:25%;
+  display: flex;
+  padding-right: 13px;
+}
+
+.wrap-input100 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  width: 100%;
+  height: 80px;
+  position: relative;
+  border: 1px solid #9b03a3;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.label-input100 {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #000563;
+  line-height: 1.2;
+
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+  padding-left: 24px;
+  left: 0;
+  top: 10px;
+}
+
+.input100 {
+  display: block;
+  width: 100%;
+  background: transparent;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  color: #000563;
+  line-height: 1.4;
+  padding: 0 26px;
+}
+
+input.input100 {
+  height: 48px;
+	width: 100% !important;
+}
+
+.input100:focus {
+  height: 48px;
+	width: 100% !important;
+}
+
+.has-val {
+  height: 48px !important;
+	width: 100% !important;
+}
+
+.has-val + .focus-input100 + .label-input100 {
+  top: 14px;
+  font-size: 13px;
+	width: 100% !important;
+}
+
 /*//////////////////////////////////////////////////////////////////
 [ Table ]*/
 
@@ -231,13 +346,14 @@ iframe {
   display: -ms-flexbox;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   padding: 0 30px 30px;
 }
 
 .wrap-table100 {
-  width: 100%;
+  width: 75%;
+  height: 100%;
   border-radius: 20px;
   overflow: hidden;
 }
@@ -266,7 +382,6 @@ iframe {
   color: #21edc8;
   background: #000563;
 }
-
 
 .cell {
   display: table-cell;
@@ -373,11 +488,12 @@ iframe {
 [ Execute Trade Button ]*/
 
 .buttons-container {
-  width: 25%;
+  width: 15%;
   display:flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  padding-left: 13px;
 }
 
 .buttons-container form {
@@ -389,7 +505,7 @@ iframe {
   font-family: "Poppins", sans-serif;
   text-transform: uppercase;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
   letter-spacing: 1px;
   padding: 8px 28px;
   border-radius: 50px;
@@ -414,7 +530,7 @@ iframe {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0 35px;
+  padding: 10px 0px 35px;
 }
 
 .current-stock {
@@ -447,22 +563,19 @@ iframe {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding: 0 0 10px;
 }
 
-.orders {
+.orders, .volume, .price, .quantity, .type, .ric {
   color: #000563;
 }
 
-.totalOrders {
+.totalOrders, .totalVolume, .current-ric {
   color: #32b5c9;
 }
 
-.volume {
-  color: #000563;
-}
-
-.totalVolume {
-  color: #32b5c9;
+.add-order {
+  color: #9b03a3;
 }
 
 .success {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,35 +37,6 @@ public class OrderBookService implements OrderBookDAO {
 	private SortService sortService;
 
 	private Random random = new Random();
-
-	/** 
-	 * @param orderBookId
-	 * @param o
-	 * @return OrderBook
-	 */
-	@Override
-	public OrderBook addOrder(int orderBookId, int orderId) {
-		
-		OrderBook orderBook = findOrderBook(orderBookId);
-		List<Order> orders = orderBook.getOrders();
-		orders.add(orderService.findOrder(orderId));
-		return orderBookRepository.save(orderBook);
-	}
-
-	
-	/** 
-	 * @param orderBookId
-	 * @param o
-	 * @return OrderBook
-	 */
-	@Override
-	public OrderBook cancelOrder(int orderBookId, int orderId) {
-		
-		OrderBook orderBook = findOrderBook(orderBookId);
-		List<Order> orders = orderBook.getOrders();
-		orders.remove(orderService.findOrder(orderId));
-		return orderBookRepository.save(orderBook);
-	}
 	
 	
 	/** 
@@ -108,69 +80,20 @@ public class OrderBookService implements OrderBookDAO {
 		List<OrderBook> orderBooksForRic = new ArrayList<>();
 
 		// find orderbooks for given ric 
-		for (OrderBook combinedOrders : combinedOrderBook) {
-
+		combinedOrderBook.stream().forEach(combinedOrders -> {
 			String givenRic = ric.getNotation();
 			String currentOrderBookRic = combinedOrders.getRic().getNotation();
 
 			if (currentOrderBookRic.equals(givenRic)) {
 				orderBooksForRic.add(combinedOrders);
 			}
-		}
+		});
 
 		return orderBooksForRic;
 	}
 
-	
-	/** 
-	 * Returns all of the orders in a given list of order books that have the order type buy.
-	 * 
-	 * @param orderBooks
-	 * @return List<Order>
-	 */
-	@Override
-	public List<Order> getBuyOrders(List<OrderBook> orderBooks) {
 
-		List<Order> buyOrdersForRic = new ArrayList<>();
-
-		for (OrderBook orderBookForRic : orderBooks) {
-			for (Order ricOrder : orderBookForRic.getOrders()) {
-				if (ricOrder.getType().equals(OrderType.BUY)) {
-					buyOrdersForRic.add(ricOrder);
-				} 
-			}
-		}
-
-		// TODO: orders must be sorted based on highest price
-
-		return buyOrdersForRic;
-	}
-
-	
-	/** 
-	 * Returns all of the orders in a given list of order books that have the order type sell. 
-	 * 
-	 * @param orderBooks
-	 * @return List<Order>
-	 */
-	@Override
-	public List<Order> getSellOrders(List<OrderBook> orderBooks) {
-
-		List<Order> sellOrdersForRic = new ArrayList<>();
-
-		for (OrderBook orderBookForRic : orderBooks) {
-			for (Order ricOrder : orderBookForRic.getOrders()) {
-				if (ricOrder.getType().equals(OrderType.SELL)) {
-					sellOrdersForRic.add(ricOrder);
-				} 
-			}
-		}
-
-		// TODO: orders must be sorted based on lowest price
-		return sellOrdersForRic;
-	} 
-
-
+	// TODO: refactor
 	/**
 	 * Generates random orders using predetermined instrument types.
 	 * 
@@ -252,13 +175,13 @@ public class OrderBookService implements OrderBookDAO {
 	@Override
 	public int calculateNumberOfOrders(List<OrderBook> orderBooks) {
 
-		int numOfOrders = 0;
+		AtomicInteger numOfOrders = new AtomicInteger(0);
 
-		for (OrderBook orderBook : orderBooks) {
-			numOfOrders += orderBook.getOrders().size();
-		}
+		orderBooks.stream().forEach(orderBook -> {
+			numOfOrders.set(numOfOrders.get() + orderBook.getOrders().size());
+		});
 
-		return numOfOrders;
+		return numOfOrders.get();
 	}
 
 	
@@ -271,15 +194,24 @@ public class OrderBookService implements OrderBookDAO {
 	@Override
 	public int calculateVolume(List<OrderBook> orderBooks) {
 
-		int volume = 0;
+		AtomicInteger volume = new AtomicInteger(0);
 
-		for (OrderBook orderBook : orderBooks) {
-			for (Order order : orderBook.getOrders()) {
-				volume += order.getQuantity();
-			}
-		}
+		orderBooks.stream().forEach(orderBook -> 
+			orderBook.getOrders().stream().forEach(order -> {
+				volume.set(volume.get() + order.getQuantity());
+			})
+		);
 
-		return volume;
+		return volume.get();
+	}
+
+
+	
+	/** 
+	 * @param orderBook
+	 */
+	public void saveOrderBook(OrderBook orderBook) {
+		orderBookRepository.save(orderBook);
 	}
 
 }

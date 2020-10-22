@@ -1,23 +1,28 @@
 package com.mthree.dtos;
 
+import java.util.List;
+
+import com.mthree.models.Order;
 import com.mthree.models.Region;
 
 public class TraderDTO {
 
     private int id;
     private String username;
-    private String password;
-    private Region region;
+	private String password;
 	private String passwordConfirm;
+	private Region region;
+	private List<Order> orders;
 	
 	public TraderDTO() {}
     
-    public TraderDTO(int id, String username, String password, Region region, String passwordConfirm) {
+    public TraderDTO(int id, String username, String password, String passwordConfirm, Region region, List<Order> orders) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.passwordConfirm = passwordConfirm;
 		this.region = region;
-        this.passwordConfirm = passwordConfirm;
+		this.orders = orders;
 	}
 	
 	
@@ -67,7 +72,24 @@ public class TraderDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 	
+	/** 
+	 * @return String
+	 */
+	public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    
+	/** 
+	 * @param passwordConfirm
+	 */
+	public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+	}
+	
+
 	/** 
 	 * @return Region
 	 */
@@ -83,26 +105,25 @@ public class TraderDTO {
 		this.region = region;
 	}
 	
-	/** 
-	 * @return String
-	 */
-	public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    
-	/** 
-	 * @param passwordConfirm
-	 */
-	public void setPasswordConfirm(String passwordConfirm) {
-        this.passwordConfirm = passwordConfirm;
-    }
 	
 	/** 
-	 * @return String
+	 * @return List<Order>
 	 */
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	
+	/** 
+	 * @param orders
+	 */
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
 	@Override
 	public String toString() {
-		return "Trader [id=" + id + ", username=" + username + ", password=" + region + ", region=" +"]";
+		return "TraderDTO [id=" + id + ", username=" + username + ", password=" + password + ", region=" + region + ", orders=" + orders + "]";
 	}
+
 }
