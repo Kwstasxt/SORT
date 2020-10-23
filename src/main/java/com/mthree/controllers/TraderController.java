@@ -122,13 +122,12 @@ public class TraderController {
      */
     @PostMapping("/user/new")
     public String registerUser(@ModelAttribute("userForm") TraderDTO userForm, BindingResult bindingResult) {
-    	Trader trader = convertToEntity(userForm);
-
-        traderValidator.validate(trader, bindingResult);
-        
         if (bindingResult.hasErrors()) {
             return "/user/register";
         } else {
+            Trader trader = convertToEntity(userForm);
+
+            traderValidator.validate(trader, bindingResult);
 
             traderService.addTrader(trader);
 
