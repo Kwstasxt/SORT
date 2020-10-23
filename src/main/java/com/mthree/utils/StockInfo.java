@@ -69,24 +69,25 @@ public class StockInfo {
         Map<Trade, List<ExchangeMpid>> tempTrades = new HashMap<>(); 
 
         // find matching orders
-        List<Trade> trades = findMatchingOrders();
+         List<Trade> trades = sortService.matchOrdersForRic(banksOrderBooks, exchangesOrderBooks, ric);
 
         // avoid natural ordering being used
-        Trade[] sortedTrades = sortTrades(trades);
+        //Trade[] sortedTrades = sortTrades(trades);
 
         // find exchange mpids and add to map
-        Arrays.stream(sortedTrades).forEach(trade -> {
+        trades.stream().forEach(trade -> {
             Order buyOrder = trade.getBuyOrder();
             Order sellOrder = trade.getSellOrder();
 
-            ExchangeMpid buyOrderExchangeMpid = exchangeService.findMpidForOrder(buyOrder);
-            ExchangeMpid sellOrderExchangeMpid = exchangeService.findMpidForOrder(sellOrder); 
-
-            List<ExchangeMpid> mpids = new ArrayList<>();
-            mpids.add(buyOrderExchangeMpid);
-            mpids.add(sellOrderExchangeMpid);
-
-            tempTrades.put(trade, mpids);
+            if (buyOrder.getPrice().compareTo(sellOrder.getPrice()) > 0) {
+                ExchangeMpid buyOrderExchangeMpid = exchangeService.findMpidForOrder(buyOrder);
+                ExchangeMpid sellOrderExchangeMpid = exchangeService.findMpidForOrder(sellOrder); 
+                List<ExchangeMpid> mpids = new ArrayList<>();
+                mpids.add(buyOrderExchangeMpid);
+                mpids.add(sellOrderExchangeMpid);
+    
+                tempTrades.put(trade, mpids);
+            }
         });
 
         List<OrderBook> orderBooksForRic = orderBookService.getOrderbooksForRic(sort, ric);

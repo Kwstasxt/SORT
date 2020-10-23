@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.mthree.models.Exchange;
 import com.mthree.models.ExchangeMpid;
@@ -125,6 +127,100 @@ public class SortService implements SortDAO {
 		
 	
 	}	
+
+	@Override
+	public List<Trade> matchOrdersForRic(List<OrderBook> banksOrderBooks, List<OrderBook> exchangesOrderBooks, Ric ric) {
+
+		Set<Order> combinedOrders = new HashSet<>();
+
+		banksOrderBooks.stream().forEach(bankOrderBook -> {
+			if (ric.equals(bankOrderBook.getRic())) {
+				combinedOrders.addAll(bankOrderBook.getOrders());
+			}
+		});
+
+		exchangesOrderBooks.stream().forEach(exchangeOrderBook -> {
+			if (ric.equals(exchangeOrderBook.getRic())) {
+				combinedOrders.addAll(exchangeOrderBook.getOrders());
+			}
+		});
+		
+		return bestSpread(combinedOrders, ric);
+	}
+
+	/** 
+	 * @param orders
+	 * @param ric
+	 * @return List<Trade>
+	 */
+	private List<Trade> bestSpread(Set<Order> orderSet, Ric ric) {
+
+		List<Order> orders = new ArrayList<>();
+		orders.addAll(orderSet);
+
+		List<Trade> trades = new ArrayList<>();
+	
+		boolean bidMatch = false; 
+		boolean askMatch = false;
+
+		// loop until no match is found
+		do {
+
+			bidMatch = false;
+			askMatch = false;
+
+			Order highestBidOrder = new Order();
+			BigDecimal maxBidPrice = BigDecimal.valueOf(Integer.MIN_VALUE);
+			Order lowestAskOrder = new Order();
+			BigDecimal minAskPrice = BigDecimal.valueOf(Integer.MAX_VALUE);
+
+
+			for (Order order : orders) {
+
+				if (order.getRic().equals(ric) && order.getQuantity() > 0) {
+					
+					// new highest bid price
+					if (order.getType() == OrderType.BUY && order.getPrice().compareTo(maxBidPrice) > 0) {
+						
+						maxBidPrice = order.getPrice();
+						highestBidOrder = order;
+						bidMatch = true;
+
+					} 
+					// new lowest ask price
+					else if (order.getType() == OrderType.SELL && order.getPrice().compareTo(minAskPrice) < 0) {
+
+						minAskPrice = order.getPrice();
+						lowestAskOrder = order; 
+						askMatch = true;
+
+					}
+				}
+			}
+			
+			if (bidMatch && askMatch) {
+				// add to trades
+				Trade trade = new Trade();
+				trade.setBuyOrder(highestBidOrder);
+				trade.setSellOrder(lowestAskOrder);
+				trades.add(trade);
+
+				// remove from copy of list
+		
+				int index = orders.indexOf(highestBidOrder);
+				orders.remove(index);
+
+				int indexLowestAskOrder = orders.indexOf(lowestAskOrder);
+				orders.remove(indexLowestAskOrder);
+				
+				System.out.println(orders.size());
+			}
+
+		} while (bidMatch && askMatch);
+
+		return trades;
+	}
+
 
 	
 	/** 
