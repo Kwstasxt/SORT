@@ -116,7 +116,7 @@ public class OrderBookController {
             if (trade.getBuyOrder().getPrice() != null) { //if trade executable
                 model.addAttribute("executedTrades", executedTrades);
                 //TODO: Make sure that when merging that for the equivalent Complete/ success page whatever the session is NOT refreshed ~Anna
-                //status.setComplete(); //refreshes the session so previous trade data is disregarded
+                // status.setComplete(); //refreshes the session so previous trade data is disregarded
                 return "redirect:/user/executeTradeSuccess";
             } else { //if trade non executable
                 status.setComplete(); //refreshes the session so previous trade data is disregarded

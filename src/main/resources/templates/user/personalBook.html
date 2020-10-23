@@ -42,27 +42,6 @@
 
 		<div class="container-table100">
 			<div class="stock-info">
-				<div class="current-stock">
-					<h3>
-						<span class="currentStock">Current stock: </span>
-					</h3>
-
-
-				</div>
-
-				<div class="stock-activity-container">
-					<div>
-						<h3 class="stock-activity">Overall stock activity:</h3>
-						<h4 class="stock-activity-info">
-							<span class="orders">Orders: </span>
-							<span class="totalOrders" th:text="${totalOrders}"></span>
-						</h4>
-						<h4 class="stock-activity-info">
-							<span class="volume">Volume: </span>
-							<span class="totalVolume" th:text="${totalVolume}"></span>
-						</h4>
-					</div>
-				</div>
 			</div>
 
 			<div class="table-container">
@@ -88,17 +67,17 @@
 							</tr>
 						</thead>
 						<tbody>
-							<th:block th:each="trade, iterStat : ${tempTrades.keySet()}">
-								<tr th:classappend="${iterStat.index != tempTrades.size() - 1} ? row : last-row">
+							<th:block th:each="trade, iterStat : ${executedTrades.keySet()}">
+								<tr th:classappend="${iterStat.index != executedTrades.size() - 1} ? row : last-row">
 									<input type="hidden" id="tradeId" name="tradeId" th:value="${trade.getId()}">
-									<td class="cell outlined" th:text="${orderBook.getRic().getNotation()}">ric</td>
-									<td class="cell" th:text="${trade.getBuyOrder().getSubmitTime().toLocalTime()}">buy order time</td>
-									<td class="cell" th:text="${tempTrades.get(trade).get(0).getNotation()}">buy order exchange id</td>
+									<td class="cell" th:text="${trade.getBuyOrder().getRic().getNotation()}">ric</td>
+									<td class="cell outlined" th:text="${trade.getBuyOrder().getSubmitTime().toLocalTime()}">buy order time</td>
+									<td class="cell" th:text="${executedTrades.get(trade).get(0).getNotation()}">buy order exchange id</td>
 									<td class="cell" th:text="${trade.getBuyOrder().getQuantity()}">buy order quantity</td>
 									<td class="cell" th:text="${trade.getBuyOrder().getPrice()}">buy order price</td>
 									<td class="cell outlined" th:text="${trade.getSellOrder().getPrice()}">sell order price</td>
 									<td class="cell" th:text="${trade.getSellOrder().getQuantity()}">sell order quantity</td>
-									<td class="cell" th:text="${tempTrades.get(trade).get(1).getNotation()}">sell order exchange id</td>
+									<td class="cell" th:text="${executedTrades.get(trade).get(1).getNotation()}">sell order exchange id</td>
 									<td class="cell" th:text="${trade.getSellOrder().getSubmitTime().toLocalTime()}">sell order time</td>
 								</tr>
 							</th:block>
