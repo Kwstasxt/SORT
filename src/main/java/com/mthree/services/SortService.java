@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.mthree.models.Exchange;
 import com.mthree.models.ExchangeMpid;
+import com.mthree.models.Fee;
 import com.mthree.models.Order;
 import com.mthree.models.OrderBook;
 import com.mthree.models.OrderType;
@@ -35,16 +36,14 @@ public class SortService implements SortDAO {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private TradeService tradeservice;
 
 	@Autowired
 	private TraderService traderService;
-	
 
-	
-	/** 
+	/**
 	 * @param Map<Trade
 	 * @param tempTrades
 	 * @return Map<Trade, List<ExchangeMpid>>
@@ -59,77 +58,73 @@ public class SortService implements SortDAO {
 
 	// public boolean isRunningOnce = true;
 
-
 	@Override
 	public Map<Trade, List<ExchangeMpid>> tradePrice(Map<Trade, List<ExchangeMpid>> tempTrades) {
-		// Compares prices of two orders and is used in OrderBookController to deem the trade as executable or not
+		// Compares prices of two orders and is used in OrderBookController to deem the
+		// trade as executable or not
 		BigDecimal tradePrice = null;
 		for (Map.Entry<Trade, List<ExchangeMpid>> trade : tempTrades.entrySet()) {
 			BigDecimal buyPrice = trade.getKey().getBuyOrder().getPrice();
 			BigDecimal sellPrice = trade.getKey().getSellOrder().getPrice();
 			int res = buyPrice.compareTo(sellPrice);
-			
 
-			if(res < 0){
+			if (res < 0) {
 				tradePrice = null;
-			} //sell>buy: therefore trade not allowed to be executed
-			if(res == 0){
+			} // sell>buy: therefore trade not allowed to be executed
+			if (res == 0) {
 				tradePrice = (sellPrice.add(buyPrice)).divide(new BigDecimal(2));
-			} //sell==buy: trade can be executed
-			if(res > 0){
+			} // sell==buy: trade can be executed
+			if (res > 0) {
 				tradePrice = (sellPrice.add(buyPrice)).divide(new BigDecimal(2));
-			} //buy>sell: trade can be executed
+			} // buy>sell: trade can be executed
 
 			trade.getKey().getBuyOrder().setPrice(tradePrice);
 			trade.getKey().getSellOrder().setPrice(tradePrice);
 
-			}
-			return tempTrades;
+		}
+		return tempTrades;
 
 	}
-	
+
 	public void executeTrade() {
-		
-	
-	// 	//traderInstance: is the trader currently logged in. Get this from the front-end.
-		
-		
-	// 	if (isRunningOnce){
-			
-	// 		//Switch state of isRunningOnce in order not to perform the retrieval again by the DB.
-	// 		//For Faster results.
-	// 		isRunningOnce = false;
 
-	// 		 tradersSort = findSortForTrader(traderInstance);
+		// //traderInstance: is the trader currently logged in. Get this from the
+		// front-end.
 
-	// 		 //Generate combined Orderbooks for this Sort.	
-	// 		 bufferOrderBook = combineOrderBooks(tradersSort);	
-	// 	}
+		// if (isRunningOnce){
 
-		
-		
-	// 	OrderBook banksOrderBook = bufferOrderBook.get(0);
-	// 	List<OrderBook> exchangesOrderbooks = bufferOrderBook;
-	// 	//Remove index 0. It is the banks orderbook.
-	// 	exchangesOrderbooks.remove(0);
+		// //Switch state of isRunningOnce in order not to perform the retrieval again
+		// by the DB.
+		// //For Faster results.
+		// isRunningOnce = false;
 
-	// 	//Perform SORT for this Specific Trader. Call matchTradersOrders method to find the best match orders 
-	// 	//for all of traders orders.
-	// 	List<Trade> tradersTrades = null;
-	// 	for (Order tradersOrders : traderInstance.getOrders()){
-	// 		tradersTrades = performSort(banksOrderBook, exchangesOrderbooks, tradersOrders);
-	// 	}
+		// tradersSort = findSortForTrader(traderInstance);
 
-		
-	// 	 //Displays the tradersTrades?
-		
-		
-		
-	
-	}	
+		// //Generate combined Orderbooks for this Sort.
+		// bufferOrderBook = combineOrderBooks(tradersSort);
+		// }
+
+		// OrderBook banksOrderBook = bufferOrderBook.get(0);
+		// List<OrderBook> exchangesOrderbooks = bufferOrderBook;
+		// //Remove index 0. It is the banks orderbook.
+		// exchangesOrderbooks.remove(0);
+
+		// //Perform SORT for this Specific Trader. Call matchTradersOrders method to
+		// find the best match orders
+		// //for all of traders orders.
+		// List<Trade> tradersTrades = null;
+		// for (Order tradersOrders : traderInstance.getOrders()){
+		// tradersTrades = performSort(banksOrderBook, exchangesOrderbooks,
+		// tradersOrders);
+		// }
+
+		// //Displays the tradersTrades?
+
+	}
 
 	@Override
-	public List<Trade> matchOrdersForRic(List<OrderBook> banksOrderBooks, List<OrderBook> exchangesOrderBooks, Ric ric) {
+	public List<Trade> matchOrdersForRic(List<OrderBook> banksOrderBooks, List<OrderBook> exchangesOrderBooks,
+			Ric ric) {
 
 		Set<Order> combinedOrders = new HashSet<>();
 
@@ -144,11 +139,11 @@ public class SortService implements SortDAO {
 				combinedOrders.addAll(exchangeOrderBook.getOrders());
 			}
 		});
-		
+
 		return bestSpread(combinedOrders, ric);
 	}
 
-	/** 
+	/**
 	 * @param orders
 	 * @param ric
 	 * @return List<Trade>
@@ -159,8 +154,8 @@ public class SortService implements SortDAO {
 		orders.addAll(orderSet);
 
 		List<Trade> trades = new ArrayList<>();
-	
-		boolean bidMatch = false; 
+
+		boolean bidMatch = false;
 		boolean askMatch = false;
 
 		// loop until no match is found
@@ -174,30 +169,29 @@ public class SortService implements SortDAO {
 			Order lowestAskOrder = new Order();
 			BigDecimal minAskPrice = BigDecimal.valueOf(Integer.MAX_VALUE);
 
-
 			for (Order order : orders) {
 
 				if (order.getRic().equals(ric) && order.getQuantity() > 0) {
-					
+
 					// new highest bid price
 					if (order.getType() == OrderType.BUY && order.getPrice().compareTo(maxBidPrice) > 0) {
-						
+
 						maxBidPrice = order.getPrice();
 						highestBidOrder = order;
 						bidMatch = true;
 
-					} 
+					}
 					// new lowest ask price
 					else if (order.getType() == OrderType.SELL && order.getPrice().compareTo(minAskPrice) < 0) {
 
 						minAskPrice = order.getPrice();
-						lowestAskOrder = order; 
+						lowestAskOrder = order;
 						askMatch = true;
 
 					}
 				}
 			}
-			
+
 			if (bidMatch && askMatch) {
 				// add to trades
 				Trade trade = new Trade();
@@ -206,13 +200,13 @@ public class SortService implements SortDAO {
 				trades.add(trade);
 
 				// remove from copy of list
-		
+
 				int index = orders.indexOf(highestBidOrder);
 				orders.remove(index);
 
 				int indexLowestAskOrder = orders.indexOf(lowestAskOrder);
 				orders.remove(indexLowestAskOrder);
-				
+
 				System.out.println(orders.size());
 			}
 
@@ -221,9 +215,7 @@ public class SortService implements SortDAO {
 		return trades;
 	}
 
-
-	
-	/** 
+	/**
 	 * Find all sort instances.
 	 * 
 	 * 
@@ -232,8 +224,7 @@ public class SortService implements SortDAO {
 	public List<Sort> retrieveSortFromDB() {
 		return sortRepository.findAll();
 	}
-	
-	
+
 	/**
 	 * For each orderbook in each exchange listed in the sort class, collate orders
 	 * for a given instrument.
@@ -255,21 +246,19 @@ public class SortService implements SortDAO {
 			List<Order> instrumentOrders = new ArrayList<>();
 
 			// for same ric add all orders to one orderbook
-			sort.getExchanges().stream().forEach(exchange -> 
-				exchange.getOrderBooks().stream().forEach(orderBook -> {
-					String currentRic = instrument.getNotation();
-					String orderBookRic = orderBook.getRic().getNotation();
+			sort.getExchanges().stream().forEach(exchange -> exchange.getOrderBooks().stream().forEach(orderBook -> {
+				String currentRic = instrument.getNotation();
+				String orderBookRic = orderBook.getRic().getNotation();
 
-					if (orderBookRic.equals(currentRic)) {
-						instrumentOrders.addAll(orderBook.getOrders());
-					}
+				if (orderBookRic.equals(currentRic)) {
+					instrumentOrders.addAll(orderBook.getOrders());
 				}
-			));
+			}));
 
 			instrumentOrderBook.setOrders(instrumentOrders);
 			combinedOrderBooks.add(instrumentOrderBook);
 		});
-		
+
 		return combinedOrderBooks;
 	}
 
@@ -287,7 +276,7 @@ public class SortService implements SortDAO {
 			sort.setExchanges(exservice.generateExchanges(region));
 			sort.setRegion(region);
 			sortInstances.add(sort);
-			
+
 			// save to the db
 			sortRepository.save(sort);
 		});
@@ -295,10 +284,9 @@ public class SortService implements SortDAO {
 		return sortInstances;
 	}
 
-
-	
-	/** 
-	 * Matches a given order to an order returned by the bestSpead function and creates a Trade.
+	/**
+	 * Matches a given order to an order returned by the bestSpead function and
+	 * creates a Trade.
 	 * 
 	 * @param banksOrderBooks
 	 * @param exchangesOrderBooks
@@ -315,7 +303,7 @@ public class SortService implements SortDAO {
 		for (OrderBook exchangeOrderBook : exchangesOrderBooks) {
 			combinedOrders.addAll(exchangeOrderBook.getOrders());
 		}
-		
+
 		Order match = exservice.bestSpread(combinedOrders, tradersOrder);
 
 		Trade trade = new Trade();
@@ -331,32 +319,32 @@ public class SortService implements SortDAO {
 		return trade;
 	}
 
-
-
-	//TODO: Use fees for exchanges.
+	// TODO: Use fees for exchanges.
 	/**
-	 * When a new order arrives SORT will search for an orderbook that has
-	 * the lowest price for this order.
+	 * When a new order arrives SORT will search for an orderbook that has the
+	 * lowest price for this order.
 	 * 
 	 * @param banksOrderBook
 	 * @param combinedOrderBook
 	 * @param tradersOrder
 	 * @return List<Trade>
 	 */
-	public List<Trade> performSort(List<OrderBook> banksOrderBooks, List<OrderBook> combinedOrderBook, Order tradersOrder) {
+	public List<Trade> performSort(List<OrderBook> banksOrderBooks, List<OrderBook> combinedOrderBook,
+			Order tradersOrder) {
 
 		List<Trade> trades = new ArrayList<>();
-		//Each exchange has its fees when buying bulk/Normal and its prices.
-		//When a new order arrives SORT will perform the trade searching for an exchange orderbook that has the lowest price for this order.
-		
-		//Best Spread target. Or lowest/highest sell/buy order that match this order.
-		Order target; 
+		// Each exchange has its fees when buying bulk/Normal and its prices.
+		// When a new order arrives SORT will perform the trade searching for an
+		// exchange orderbook that has the lowest price for this order.
+
+		// Best Spread target. Or lowest/highest sell/buy order that match this order.
+		Order target;
 
 		for (OrderBook banksOrderBook : banksOrderBooks) {
-			for (int i=0; i < banksOrderBook.getOrders().size(); i++) {
-				
+			for (int i = 0; i < banksOrderBook.getOrders().size(); i++) {
+
 				target = exservice.bestSpread(banksOrderBook.getOrders(), tradersOrder);
-				
+
 				// find the target's index in the Ordebook to make the changes
 				int index = banksOrderBook.getOrders().indexOf(target);
 
@@ -382,7 +370,8 @@ public class SortService implements SortDAO {
 		}
 
 		// if after searching banks orderbook to see if there is a good match for
-		// this particular order did not return any succesfull trade, then perform SORT across all
+		// this particular order did not return any succesfull trade, then perform SORT
+		// across all
 		// exchanges.
 
 		OrderType tradersType = tradersOrder.getType();
@@ -398,7 +387,7 @@ public class SortService implements SortDAO {
 
 		while (tradersOrder.getQuantity() > 0) {
 			for (OrderBook co : combinedOrderBook) {
-				
+
 				target = exservice.bestSpread(co.getOrders(), tradersOrder);
 
 				// search all exchange orderbooks
@@ -420,7 +409,7 @@ public class SortService implements SortDAO {
 			}
 
 			if (bestOrder.getQuantity() > tradersOrder.getQuantity()) {
-				
+
 				// traders order completed
 				// removeOrderFromTrader(tradersOrder);
 				completeOrder(tradersOrder, bestOrder);
@@ -437,8 +426,7 @@ public class SortService implements SortDAO {
 		return trades;
 	}
 
-	
-	/** 
+	/**
 	 * Remove current Order from the DB as it is completed.
 	 * 
 	 * @param tradersOrder
@@ -450,8 +438,7 @@ public class SortService implements SortDAO {
 		orderService.updateOrderQuantityByID(partiallyCompletedID, modifiedQuantity);
 	}
 
-	
-	/** 
+	/**
 	 * @param tradersOrder
 	 */
 	public void removeOrderFromTrader(Order tradersOrder) {
@@ -461,8 +448,7 @@ public class SortService implements SortDAO {
 		trader.setOrders(tradersOrders);
 	}
 
-	
-	/** 
+	/**
 	 * @param trades
 	 * @param order1
 	 * @param order2
@@ -473,14 +459,14 @@ public class SortService implements SortDAO {
 		Trade trade = new Trade();
 		order1.setQuantity(0);
 
-		if (order1.getType()==OrderType.BUY) {
+		if (order1.getType() == OrderType.BUY) {
 			trade.setBuyOrder(order1);
 			trade.setSellOrder(order2);
 		} else {
 			trade.setBuyOrder(order2);
 			trade.setSellOrder(order1);
 		}
-		
+
 		tradeservice.saveTradeIntoDB(trade);
 
 		trades.add(trade);
@@ -489,8 +475,7 @@ public class SortService implements SortDAO {
 		return trades;
 	}
 
-	
-	/** 
+	/**
 	 * @param banksOrderBook
 	 * @param index
 	 * @param order1
@@ -503,8 +488,7 @@ public class SortService implements SortDAO {
 		orderBook.getOrders().get(index).setQuantity(0);
 	}
 
-	
-	/** 
+	/**
 	 * Find the trader's regional instance of sort.
 	 * 
 	 * @param trader
@@ -526,6 +510,29 @@ public class SortService implements SortDAO {
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Find the correct fee for a trade.
+	 * 
+	 * @param trader
+	 * @return Sort
+	 */
+	public BigDecimal findFeeForTradersTrade(Order o, Order tradersOrder) {
+		BigDecimal fee = null;
+
+		ExchangeMpid mpid = exservice.findMpidForOrder(o);
+		Exchange tempExc = exservice.findExchange(mpid);
+		List<Fee> excFee = tempExc.getFeeLadder();
+		if (tradersOrder.getQuantity() > tempExc.getShareQuantityThreshold()) {
+			fee = excFee.get(0).getValue();
+		} else {
+			fee = excFee.get(1).getValue();
+		}
+
+		return fee;
+
 	}
 
 }
