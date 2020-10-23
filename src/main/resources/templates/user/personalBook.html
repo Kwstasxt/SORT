@@ -50,19 +50,19 @@
 						<thead>
 							<tr class="major-row header">
 								<th id="ric" colspan="1">ORDER</th>
-								<th id="buyOrders" class="outlined" colspan="4">BUY ORDERS</th>
-								<th id="sellOrders" class="outlined" colspan="4">SELL ORDERS</th>
+								<th id="buyOrders" class="outlined" colspan="3">BUY ORDERS</th>
+								<th id="sellOrders" class="outlined" colspan="3">SELL ORDERS</th>
+								<th id="tradeDetail" class="outlined" colspan="1">TRADE</th>
 							</tr>
 							<tr class="minor-row header">
 								<th id="ric">RIC</th>
 								<th id="buyTime" class="outlined">TIME</th>
 								<th id="buyMpid">MPID</th>
 								<th id="buyQuantity">SHARES</th>
-								<th id="buyPrice">BID</th>
-								<th id="sellPrice" class="outlined">ASK</th>
-								<th id="sellQuantity">SHARES</th>
+								<th id="sellQuantity" class="outlined">SHARES</th>
 								<th id="sellMpid">MPID</th>
 								<th id="sellTime">TIME</th>
+								<th id="tradePrice" class="outlined">PRICE</th>
 
 							</tr>
 						</thead>
@@ -74,11 +74,10 @@
 									<td class="cell outlined" th:text="${trade.getBuyOrder().getSubmitTime().toLocalTime()}">buy order time</td>
 									<td class="cell" th:text="${executedTrades.get(trade).get(0).getNotation()}">buy order exchange id</td>
 									<td class="cell" th:text="${trade.getBuyOrder().getQuantity()}">buy order quantity</td>
-									<td class="cell" th:text="${trade.getBuyOrder().getPrice()}">buy order price</td>
-									<td class="cell outlined" th:text="${trade.getSellOrder().getPrice()}">sell order price</td>
-									<td class="cell" th:text="${trade.getSellOrder().getQuantity()}">sell order quantity</td>
+									<td class="cell outlined" th:text="${trade.getSellOrder().getQuantity()}">sell order quantity</td>
 									<td class="cell" th:text="${executedTrades.get(trade).get(1).getNotation()}">sell order exchange id</td>
 									<td class="cell" th:text="${trade.getSellOrder().getSubmitTime().toLocalTime()}">sell order time</td>
+									<td class="cell outlined" th:text="${trade.getBuyOrder().getPrice()}">trade price</td>
 								</tr>
 							</th:block>
 						</tbody>
