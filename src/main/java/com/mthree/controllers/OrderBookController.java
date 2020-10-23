@@ -20,6 +20,7 @@ import java.util.Map;
 import com.mthree.dtos.OrderBookDTO;
 import com.mthree.dtos.OrderDTO;
 import com.mthree.models.ExchangeMpid;
+import com.mthree.models.Order;
 import com.mthree.models.OrderBook;
 import com.mthree.models.Trade;
 import com.mthree.models.TraderUserDetails;
@@ -97,7 +98,9 @@ public class OrderBookController {
     public String executeTrade(@ModelAttribute("executedTrades") Map<Trade, List<ExchangeMpid>> executedTrades,
             Model model, @ModelAttribute("orderBook") OrderBookDTO orderBookDto,
             @RequestParam(value = "executeTradeButton") int tradeId,
-            @ModelAttribute("tempTrades") Map<Trade, List<ExchangeMpid>> tempTrades, SessionStatus status) {
+            @ModelAttribute("tempTrades") Map<Trade, List<ExchangeMpid>> tempTrades, SessionStatus status, 
+            @ModelAttribute("trader") TraderUserDetails trader) { 
+                //TODO: Make sure that when merging the trader is inputter as argument here ~Anna
         Trade chosenTrade = new Trade();
         for (Trade trade : tempTrades.keySet()) {
             if (trade.getBuyOrder().getRic().equals(orderBookDto.getRic()) && trade.getId() == tradeId) {
@@ -106,15 +109,19 @@ public class OrderBookController {
             }
         }
         executedTrades.put(chosenTrade, tempTrades.get(chosenTrade));
+        System.out.println(trader.getTrader().getOrders().toString());
+       // trader.getTrader().setOrders();
         executedTrades = sortService.tradePrice(executedTrades); //// getting trade price (either null bcs trade not executable or midpoint between buyPrice and sellPrice)
         for (Trade trade : executedTrades.keySet()) {
             if (trade.getBuyOrder().getPrice() != null) { //if trade executable
                 model.addAttribute("executedTrades", executedTrades);
-                status.setComplete(); //refreshes the session so previous trade data is disregarded
+                //TODO: Make sure that when merging that for the equivalent Complete/ success page whatever the session is NOT refreshed ~Anna
+                //status.setComplete(); //refreshes the session so previous trade data is disregarded
                 return "redirect:/user/executeTradeSuccess";
             } else { //if trade non executable
                 status.setComplete(); //refreshes the session so previous trade data is disregarded
                 return "redirect:/user/errorTrade";
+                //TODO: Make sure that when merging to include an extra else for the error page :)  ~Anna
             } 
         }
         return "/user/home";
@@ -145,6 +152,16 @@ public class OrderBookController {
      */
     @GetMapping("/user/personalBook")
     public String populateBook(@ModelAttribute("executedTrades") Map<Trade, List<ExchangeMpid>> executedTrades, Model model, @ModelAttribute("trader") TraderUserDetails trader) {
+//TODO: Make sure that when merging the trader is inputter as argument here ~Anna
+System.out.println(trader.getTrader().getOrders().toString());
+       // List<Order> trOrders = trader.getTrader().getOrders();
+       // System.out.println(trOrders.toString());
+        // for(Order o : trOrders){
+        //     if(o.getType().equals("BUY")){
+        //         model.addAttribute("buy", o);
+        //     }
+        // }
+       // model.addAttribute("trOrders", trOrders);
 
         return "/user/personalBook";
     }
