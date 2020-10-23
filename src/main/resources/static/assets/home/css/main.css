@@ -515,13 +515,17 @@ input.input100 {
   color: #9b03a3;
 }
 
+.btn-exec-trade:disabled {
+  cursor: not-allowed;
+  border: 2px solid #5c5c5c;
+  color: #414141;
+}
 
-.btn-exec-trade:hover {
+.btn-exec-trade:hover:enabled {
   background: #32b5c9;
   border: 2px solid #32b5c9;
   color: #ffffff;
 }
-
 /*//////////////////////////////////////////////////////////////////
 [ Stock Info ]*/
 

@@ -12,6 +12,10 @@ $(document).ready(function () {
     });
 
     $('#executeTradeButton').attr('value', this.querySelector("#tradeId").value);
+    $('#executeTradeButton').removeAttr("disabled");
   });
+
+  $('#price').val(0.01);
+  $('#quantity').val(1);
 
 });
