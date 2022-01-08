@@ -7,4 +7,4 @@ matched by demo venues. The main scope is to match user’s
 buy or sell order by the best BID or ASK price amongst multiple
 exchanges.
 
-<img src="./Menu.jpeg" alt="Menu App" width="400px" height="600px"> 
+<img src="./Menu.jpeg" alt="Menu App" width="800" height="600px"> 
